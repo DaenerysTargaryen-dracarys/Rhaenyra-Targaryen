@@ -69,7 +69,6 @@ button:hover {
   background: linear-gradient(145deg, #aee2ff, #60a9e6);
   box-shadow: 0 6px 14px #aee2ff;
 }
-
 .btn-primary { background: linear-gradient(145deg, #60a9e6, #aee2ff); color:#fff; }
 .btn-warning { background: linear-gradient(145deg, #f7b267, #ffcc7a); color:#fff; }
 .btn-success { background: linear-gradient(145deg, #5de0e6, #8ff3ff); color:#fff; }
@@ -119,6 +118,25 @@ tr:hover td {
   animation: snowFall linear infinite;
 }
 
+/* --- DRAGON --- */
+#dragon {
+  position: fixed;
+  top: 20%;
+  left: -200px;
+  width: 200px;
+  z-index: 9999;
+  pointer-events: none;
+  display: none;
+  animation: flyDragon 10s linear forwards;
+}
+@keyframes flyDragon {
+  0% { left: -200px; transform: rotate(0deg); }
+  25% { transform: rotate(10deg); }
+  50% { left: 100%; transform: rotate(-10deg); }
+  75% { transform: rotate(10deg); }
+  100% { left: 110%; transform: rotate(0deg); }
+}
+
 /* --- ANIMATIONS --- */
 @keyframes snowFall { 0% { top:-50px; } 100% { top:100vh; } }
 @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
@@ -136,6 +154,9 @@ tr:hover td {
 <span class="snowflake" style="left: 50%; font-size:2em; animation-delay: 1.2s;">❆</span>
 <span class="snowflake" style="left: 70%; animation-delay: 3.1s;">❄</span>
 <span class="snowflake" style="left: 90%; font-size:2em; animation-delay: 0.8s;">❅</span>
+
+<!-- Dragon -->
+<img id="dragon" src="https://i.ibb.co/6m2y4sM/dragon-flying.png" alt="Dragon">
 
 <div class="container">
   <div class="file-section">
@@ -194,7 +215,6 @@ function generateSurveyLink(row) {
   const receiptNo = row['Receipt No.'];
   const salesType = row['Sales Type'];
   let surveyModel='', orderID='', numericOT='';
-
   if(/^\d+$/.test(receiptNo) && salesType==='TAKEAWAY'){surveyModel='6.0'; orderID=receiptNo; numericOT='2';}
   else if(/^\d+$/.test(receiptNo) && salesType==='DINE-IN'){surveyModel='6.0'; orderID=receiptNo; numericOT='1';}
   else if(receiptNo.startsWith('K281') && salesType==='TAKEAWAY'){surveyModel='4.0'; orderID=receiptNo.slice(-4); numericOT='2';}
@@ -225,12 +245,7 @@ function processFile(){
     const sheetName=workbook.SheetNames[0];
     const sheet=workbook.Sheets[sheetName];
     const rows=XLSX.utils.sheet_to_json(sheet);
-
-    currentData=rows.map(row=>{
-      const link=generateSurveyLink(row);
-      return {...row, link};
-    });
-
+    currentData=rows.map(row=>{const link=generateSurveyLink(row); return {...row, link};});
     renderTable();
   };
   reader.readAsArrayBuffer(file);
@@ -262,8 +277,29 @@ function clearData(){
   document.getElementById('exportBtn').disabled=true;
 }
 
-function copyLink(link){ navigator.clipboard.writeText(link).then(()=>alert("Link copied!")); }
-function copyAllLinks(){ navigator.clipboard.writeText(currentData.map(r=>r.link).join("\n")).then(()=>alert("All links copied!")); }
+// Dragon effect
+function showDragon(){
+  const dragon=document.getElementById('dragon');
+  dragon.style.display='block';
+  dragon.style.animation='none';
+  dragon.offsetHeight;
+  dragon.style.animation='flyDragon 10s linear forwards';
+  setTimeout(()=>{ dragon.style.display='none'; },10000);
+}
+
+function copyLink(link){
+  navigator.clipboard.writeText(link).then(()=>{
+    alert("Link copied!");
+    showDragon();
+  });
+}
+
+function copyAllLinks(){
+  navigator.clipboard.writeText(currentData.map(r=>r.link).join("\n")).then(()=>{
+    alert("All links copied!");
+    showDragon();
+  });
+}
 
 function exportToCSV(){
   let csv="Receipt No.,Sales Type,Generated Link\n";
