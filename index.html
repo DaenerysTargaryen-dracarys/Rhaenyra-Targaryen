@@ -13,27 +13,42 @@
       margin: 0;
       padding: 0;
       font-family: 'Cinzel', serif;
-      background: url('dragon.jpg') no-repeat center center/cover;
+      /* Winter background: snowy landscape or frosty pattern */
+      background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80') no-repeat center center/cover;
       color: #fff;
       text-align: center;
       min-height: 100vh;
+      /* overlay for frosty effect */
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(43,72,115, 0.55); /* blue icy overlay */
+      z-index: -1;
+      pointer-events: none;
     }
 
     h1 {
       margin: 20px 0;
       font-size: 2.5rem;
-      text-shadow: 2px 2px 5px black;
+      text-shadow: 2px 2px 8px #193059;
+      color: #e6f7ff;
       animation: fadeIn 2s ease-in-out;
+      letter-spacing: 2px;
     }
 
     .container {
-      background: rgba(0, 0, 0, 0.75);
+      background: rgba(21, 40, 66, 0.85);
       padding: 20px;
-      border-radius: 15px;
+      border-radius: 18px;
       max-width: 900px;
       margin: auto;
-      box-shadow: 0 0 20px #ff4500;
+      box-shadow: 0 0 24px #60a9e6;
       animation: slideDown 1.5s ease;
+      border: 2px solid #aee2ff;
     }
 
     .file-section input {
@@ -41,6 +56,8 @@
       padding: 8px;
       border-radius: 8px;
       border: none;
+      background: #e6f7ff;
+      color: #193059;
     }
 
     button {
@@ -51,14 +68,18 @@
       cursor: pointer;
       font-weight: bold;
       transition: transform 0.10s, background 0.10s;
+      background: #aee2ff;
+      color: #193059;
+      box-shadow: 0 2px 8px #60a9e6;
     }
 
-    .btn-primary { background: #ff4500; color: #fff; }
-    .btn-warning { background: #f0ad4e; color: #fff; }
-    .btn-success { background: #28a745; color: #fff; }
+    .btn-primary { background: #60a9e6; color: #fff; }
+    .btn-warning { background: #f7b267; color: #fff; }
+    .btn-success { background: #5de0e6; color: #fff; }
 
     button:hover {
-      transform: scale(1.1);
+      transform: scale(1.07);
+      background: #b9eaff;
     }
 
     .table-container {
@@ -70,27 +91,50 @@
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 10px;
+      background: rgba(255,255,255,0.04);
+      box-shadow: 0 0 8px #60a9e6;
+      border-radius: 12px;
+      overflow: hidden;
     }
 
     th, td {
-      border: 1px solid #ddd;
+      border: 1px solid #aee2ff;
       padding: 10px;
+      color: #e6f7ff;
+      background: rgba(43,72,115,0.8);
     }
 
     th {
-      background: #222;
+      background: #193059;
+      color: #aee2ff;
+      letter-spacing: 1px;
     }
 
     .dragon {
       width: 180px;
       margin: 20px auto;
-      animation: fly 6s infinite ease-in-out;
+      animation: frostFloat 7s infinite ease-in-out;
+      filter: drop-shadow(0 0 12px #e6f7ff);
     }
 
-    @keyframes fly {
-      0% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-20px) rotate(5deg); }
-      100% { transform: translateY(0) rotate(0deg); }
+    /* Snowflakes animation */
+    .snowflake {
+      position: fixed;
+      top: -50px;
+      color: #fff;
+      font-size: 1.5em;
+      pointer-events: none;
+      animation: snowFall linear infinite;
+    }
+    @keyframes snowFall {
+      0% {top: -50px;}
+      100% {top: 100vh;}
+    }
+
+    @keyframes frostFloat {
+      0% { transform: translateY(0) scale(1.02); }
+      50% { transform: translateY(-16px) scale(1.05); }
+      100% { transform: translateY(0) scale(1.02); }
     }
 
     @keyframes fadeIn {
@@ -105,10 +149,17 @@
   </style>
 </head>
 <body>
-  <h1>Survey Link Generator - House of Dragons</h1>
+  <h1>Survey Link Generator - House of Winter</h1>
 
-  <!-- Dragon Image -->
-  <img src="https://upload.wikimedia.org/wikipedia/en/9/93/Game_of_Thrones_dragon_banner.png" alt="Dragon.jpg" class="dragon.jpg">
+  <!-- Dragon Image (White/blue theme) -->
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/White_dragon_icon.svg/240px-White_dragon_icon.svg.png" alt="Winter Dragon" class="dragon">
+
+  <!-- Snowflakes -->
+  <span class="snowflake" style="left: 10%;">❄</span>
+  <span class="snowflake" style="left: 30%; animation-delay: 2s;">❅</span>
+  <span class="snowflake" style="left: 50%; font-size:2em; animation-delay: 1.2s;">❆</span>
+  <span class="snowflake" style="left: 70%; animation-delay: 3.1s;">❄</span>
+  <span class="snowflake" style="left: 90%; font-size:2em; animation-delay: 0.8s;">❅</span>
 
   <div class="container">
     <div class="file-section">
@@ -266,10 +317,11 @@
       a.download = "survey_links.csv";
       a.click();
     }
+
+    // Animate snowflakes
+    document.querySelectorAll('.snowflake').forEach((flake, i) => {
+      flake.style.animationDuration = `${5 + Math.random() * 6}s`;
+    });
   </script>
 </body>
 </html>
-
-
-
-
