@@ -2,153 +2,89 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>House of Winter</title>
-
-  <!-- Google Fonts -->
+  <title>Login - House of Winter</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap" rel="stylesheet">
-
   <style>
     body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Cinzel', serif;
-      /* Winter background: snowy landscape or frosty pattern */
       background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80') no-repeat center center/cover;
       color: #fff;
-      text-align: center;
+      font-family: 'Cinzel', serif;
       min-height: 100vh;
-      /* overlay for frosty effect */
-      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(43,72,115, 0.55); /* blue icy overlay */
-      z-index: -1;
-      pointer-events: none;
-    }
-
-    h1 {
-      margin: 20px 0;
-      font-size: 2.5rem;
-      text-shadow: 2px 2px 8px #193059;
-      color: #e6f7ff;
-      animation: fadeIn 2s ease-in-out;
-      letter-spacing: 2px;
-    }
-
-    .container {
+    .login-container {
       background: rgba(21, 40, 66, 0.85);
-      padding: 20px;
+      padding: 30px 24px;
       border-radius: 18px;
-      max-width: 900px;
-      margin: auto;
       box-shadow: 0 0 24px #60a9e6;
-      animation: slideDown 1.5s ease;
       border: 2px solid #aee2ff;
+      text-align: center;
+      max-width: 350px;
+      width: 100%;
     }
-
-    .file-section input {
-      margin: 10px;
-      padding: 8px;
+    h2 {
+      color: #aee2ff;
+      margin-bottom: 24px;
+    }
+    input[type="text"], input[type="password"] {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
       border-radius: 8px;
       border: none;
       background: #e6f7ff;
       color: #193059;
+      font-size: 1em;
     }
-
     button {
-      margin: 5px;
-      padding: 10px 15px;
-      border: none;
+      padding: 10px 18px;
       border-radius: 10px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: transform 0.10s, background 0.10s;
-      background: #aee2ff;
-      color: #193059;
-      box-shadow: 0 2px 8px #60a9e6;
-    }
-
-    .btn-primary { background: #60a9e6; color: #fff; }
-    .btn-warning { background: #f7b267; color: #fff; }
-    .btn-success { background: #5de0e6; color: #fff; }
-
-    button:hover {
-      transform: scale(1.07);
-      background: #b9eaff;
-    }
-
-    .table-container {
-      margin-bottom: 20px;
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 10px;
-      background: rgba(255,255,255,0.04);
-      box-shadow: 0 0 8px #60a9e6;
-      border-radius: 12px;
-      overflow: hidden;
-    }
-
-    th, td {
-      border: 1px solid #aee2ff;
-      padding: 10px;
-      color: #e6f7ff;
-      background: rgba(43,72,115,0.8);
-    }
-
-    th {
-      background: #193059;
-      color: #aee2ff;
-      letter-spacing: 1px;
-    }
-
-    .dragon {
-      width: 180px;
-      margin: 20px auto;
-      animation: frostFloat 7s infinite ease-in-out;
-      filter: drop-shadow(0 0 12px #e6f7ff);
-    }
-
-    /* Snowflakes animation */
-    .snowflake {
-      position: fixed;
-      top: -50px;
+      border: none;
+      background: #60a9e6;
       color: #fff;
-      font-size: 1.5em;
-      pointer-events: none;
-      animation: snowFall linear infinite;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
     }
-    @keyframes snowFall {
-      0% {top: -50px;}
-      100% {top: 100vh;}
-    }
-
-    @keyframes frostFloat {
-      0% { transform: translateY(0) scale(1.02); }
-      50% { transform: translateY(-16px) scale(1.05); }
-      100% { transform: translateY(0) scale(1.02); }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes slideDown {
-      from { transform: translateY(-50px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+    .error {
+      color: #f7b267;
+      margin: 10px 0;
+      font-size: 1em;
+      display: none;
     }
   </style>
 </head>
 <body>
+  <div class="login-container">
+    <h2>Login</h2>
+    <form id="loginForm" autocomplete="off">
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <div class="error" id="errorMsg">Invalid credentials!</div>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+  <script>
+    // Set your static credentials here
+    const validUsername = "admin";
+    const validPassword = "winter123";
+
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      if (username === validUsername && password === validPassword) {
+        // Redirect to main page
+        window.location.href = "index.html";
+      } else {
+        document.getElementById("errorMsg").style.display = "block";
+      }
+    });
+  </script>
+</body>
+</html>
   <h1>House of Winter</h1>
 
   <!-- Snowflakes -->
@@ -322,3 +258,4 @@
   </script>
 </body>
 </html>
+
