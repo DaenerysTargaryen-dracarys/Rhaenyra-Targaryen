@@ -3,186 +3,108 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HOUSE OF STARK</title>
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap" rel="stylesheet">
-
+  <title>Survey Link Generator</title>
   <style>
     body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      color: #333;
       margin: 0;
-      padding: 0;
-      font-family: 'Cinzel', serif;
-      background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80') no-repeat center center/cover;
-      color: #fff;
-      text-align: center;
-      min-height: 100vh;
-      position: relative;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(43,72,115, 0.55);
-      z-index: -1;
-      pointer-events: none;
+      padding: 20px;
     }
 
     h1 {
-      margin: 20px 0;
-      font-size: 2.5rem;
-      text-shadow: 2px 2px 8px #193059;
-      color: #e6f7ff;
-      animation: fadeIn 2s ease-in-out;
-      letter-spacing: 2px;
+      text-align: center;
+      margin-bottom: 20px;
     }
 
     .container {
-      background: rgba(21, 40, 66, 0.85);
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
       padding: 20px;
-      border-radius: 18px;
       max-width: 900px;
       margin: auto;
-      box-shadow: 0 0 24px #60a9e6;
-      animation: slideDown 1.5s ease;
-      border: 2px solid #aee2ff;
     }
 
-    .file-section input {
-      margin: 10px;
-      padding: 8px;
-      border-radius: 8px;
-      border: none;
-      background: #e6f7ff;
-      color: #193059;
+    .file-section {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input[type="file"] {
+      margin: 10px 0;
     }
 
     button {
       margin: 5px;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 10px;
+      padding: 8px 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
       cursor: pointer;
-      font-weight: bold;
-      transition: transform 0.10s, background 0.10s;
-      background: #aee2ff;
-      color: #193059;
-      box-shadow: 0 2px 8px #60a9e6;
+      background: #eee;
     }
 
-    .btn-primary { background: #60a9e6; color: #fff; }
-    .btn-warning { background: #f7b267; color: #fff; }
-    .btn-success { background: #5de0e6; color: #fff; }
-
     button:hover:not(:disabled) {
-      transform: scale(1.07);
-      background: #b9eaff;
+      background: #ddd;
     }
 
     button:disabled {
-      background: gray !important;
+      background: #f9f9f9;
+      color: #aaa;
       cursor: not-allowed;
-    }
-
-    .table-container {
-      margin-bottom: 20px;
-      overflow-x: auto;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 10px;
-      background: rgba(255,255,255,0.04);
-      box-shadow: 0 0 8px #60a9e6;
-      border-radius: 12px;
-      overflow: hidden;
+      margin-top: 15px;
     }
 
     th, td {
-      border: 1px solid #aee2ff;
-      padding: 10px;
-      color: #e6f7ff;
-      background: rgba(43,72,115,0.8);
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
     }
 
     th {
-      background: #193059;
-      color: #aee2ff;
-      letter-spacing: 1px;
+      background: #f2f2f2;
     }
 
-    /* Neo Green highlight when copied */
     tr.copied {
-      background-color: #39FF14 !important;
-      color: black;
-    }
-
-    .snowflake {
-      position: fixed;
-      top: -50px;
-      color: #fff;
-      font-size: 1.5em;
-      pointer-events: none;
-      animation: snowFall linear infinite;
-    }
-    @keyframes snowFall {
-      0% {top: -50px;}
-      100% {top: 100vh;}
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes slideDown {
-      from { transform: translateY(-50px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+      background: #d4edda; /* light green */
+      color: #155724;
     }
   </style>
 </head>
 <body>
-  <h1>WINTER FELL</h1>
-
-  <!-- Snowflakes -->
-  <span class="snowflake" style="left: 10%;">❄</span>
-  <span class="snowflake" style="left: 30%; animation-delay: 2s;">❅</span>
-  <span class="snowflake" style="left: 50%; font-size:2em; animation-delay: 1.2s;">❆</span>
-  <span class="snowflake" style="left: 70%; animation-delay: 3.1s;">❄</span>
-  <span class="snowflake" style="left: 90%; font-size:2em; animation-delay: 0.8s;">❅</span>
+  <h1>WINNER FELL</h1>
 
   <div class="container">
     <div class="file-section">
       <h3>Upload Excel File</h3>
       <input type="file" id="fileInput" accept=".xlsx, .xls">
-      <div class="button-group">
-        <button class="btn-primary" id="generateBtn" onclick="processFile()" disabled>Generate Links</button>
-        <button class="btn-warning" onclick="clearData()">Clear All</button>
+      <div>
+        <button id="generateBtn" onclick="processFile()" disabled>Generate Links</button>
+        <button onclick="clearData()">Clear All</button>
       </div>
     </div>
 
-    <div id="status" class="status" style="display: none;"></div>
-
-    <div class="button-group">
-      <button class="btn-success" id="copyAllBtn" onclick="copyAllLinks()" disabled>Copy All Links</button>
-      <button class="btn-primary" onclick="exportToCSV()" id="exportBtn" disabled>Export to CSV</button>
+    <div>
+      <button id="copyAllBtn" onclick="copyAllLinks()" disabled>Copy All Links</button>
+      <button id="exportBtn" onclick="exportToCSV()" disabled>Export to CSV</button>
     </div>
 
-    <div class="table-container">
-      <table id="linkTable">
-        <thead>
-          <tr>
-            <th>Receipt No.</th>
-            <th>Sales Type</th>
-            <th>Generated Link</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
+    <table id="linkTable">
+      <thead>
+        <tr>
+          <th>Receipt No.</th>
+          <th>Sales Type</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </div>
 
   <!-- XLSX library -->
@@ -190,12 +112,13 @@
 
   <script>
     let currentData = [];
-    const storeID = "91KDIPL879-01"; // Store Code
+    const storeID = "91KDIPL879-01";
 
     function convertExcelDate(serial) {
       const date = new Date((serial - 25569) * 86400 * 1000);
       return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
     }
+
     function convertExcelTime(serial) {
       const totalMilliseconds = Math.round(serial * 24 * 60 * 60 * 1000);
       const hours = String(Math.floor(totalMilliseconds / (60 * 60 * 1000))).padStart(2,'0');
@@ -226,7 +149,7 @@
       return `https://customer.kfc-listens.com/jfe/form/SV_8bHC0noyvM3jPWC?Q_EED=${encodedData}`;
     }
 
-    document.getElementById('fileInput').addEventListener('change', function(e) {
+    document.getElementById('fileInput').addEventListener('change', () => {
       document.getElementById('generateBtn').disabled = false;
     });
 
@@ -255,13 +178,12 @@
     function renderTable() {
       const tbody = document.querySelector("#linkTable tbody");
       tbody.innerHTML = '';
-      currentData.forEach((row, index) => {
+      currentData.forEach(row => {
         if (row.link) {
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td>${row['Receipt No.']}</td>
             <td>${row['Sales Type']}</td>
-            <td><a href="${row.link}" target="_blank">Open Link</a></td>
             <td><button onclick="copyLink('${row.link}', this)">Copy</button></td>
           `;
           tbody.appendChild(tr);
@@ -308,12 +230,6 @@
       a.download = "survey_links.csv";
       a.click();
     }
-
-    document.querySelectorAll('.snowflake').forEach((flake, i) => {
-      flake.style.animationDuration = `${5 + Math.random() * 6}s`;
-    });
   </script>
 </body>
 </html>
-
-
