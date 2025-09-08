@@ -13,7 +13,7 @@
       padding: 20px;
     }
 
-    h1 {
+    h1, h2 {
       text-align: center;
       margin-bottom: 20px;
     }
@@ -32,8 +32,11 @@
       margin-bottom: 20px;
     }
 
-    input[type="file"] {
+    input[type="file"], input[type="text"], input[type="password"] {
       margin: 10px 0;
+      padding: 8px;
+      width: 80%;
+      max-width: 300px;
     }
 
     button {
@@ -80,7 +83,20 @@
 <body>
   <h1>WINNER FELL</h1>
 
-  <div class="container">
+  <!-- Login Screen -->
+  <div id="loginScreen" class="container">
+    <h2>Login</h2>
+    <input type="text" id="userId" placeholder="User ID"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+    <button onclick="login()">Login</button>
+    <button onclick="signup()">Sign Up</button>
+    <p id="loginMessage"></p>
+  </div>
+
+  <!-- App Screen -->
+  <div id="appScreen" class="container" style="display:none;">
+    <button onclick="logout()">Logout</button>
+
     <div class="file-section">
       <h3>Upload Excel File</h3>
       <input type="file" id="fileInput" accept=".xlsx, .xls">
@@ -110,7 +126,67 @@
   <!-- XLSX library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-  <script>
+  <!-- Firebase SDK -->
+  <script type="module">
+    // Import Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+    // Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCnFHygIpjdPzF4EaMZoKBzBTpiU0keQw0",
+      authDomain: "marvel-be93b.firebaseapp.com",
+      projectId: "marvel-be93b",
+      storageBucket: "marvel-be93b.firebasestorage.app",
+      messagingSenderId: "626647068839",
+      appId: "1:626647068839:web:90e88fae52fba975312b82",
+      measurementId: "G-V32XBZJZE4"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // --- Login ---
+    window.login = function () {
+      const userId = document.getElementById("userId").value;
+      const password = document.getElementById("password").value;
+      const email = `${userId}@myapp.local`;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          document.getElementById("loginScreen").style.display = "none";
+          document.getElementById("appScreen").style.display = "block";
+        })
+        .catch(err => {
+          document.getElementById("loginMessage").innerText = err.message;
+        });
+    };
+
+    // --- Signup ---
+    window.signup = function () {
+      const userId = document.getElementById("userId").value;
+      const password = document.getElementById("password").value;
+      const email = `${userId}@myapp.local`;
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          document.getElementById("loginMessage").innerText = "✅ Account created! Now login.";
+        })
+        .catch(err => {
+          document.getElementById("loginMessage").innerText = err.message;
+        });
+    };
+
+    // --- Logout ---
+    window.logout = function () {
+      signOut(auth).then(() => {
+        document.getElementById("loginScreen").style.display = "block";
+        document.getElementById("appScreen").style.display = "none";
+      });
+    };
+
+    // ------------------ Existing Survey Generator Code ------------------
     let currentData = [];
     const storeID = "91KDIPL879-01";
 
@@ -153,7 +229,7 @@
       document.getElementById('generateBtn').disabled = false;
     });
 
-    function processFile() {
+    window.processFile = function () {
       const file = document.getElementById('fileInput').files[0];
       if (!file) return;
 
@@ -173,7 +249,7 @@
         renderTable();
       };
       reader.readAsArrayBuffer(file);
-    }
+    };
 
     function renderTable() {
       const tbody = document.querySelector("#linkTable tbody");
@@ -193,30 +269,30 @@
       document.getElementById('exportBtn').disabled = false;
     }
 
-    function clearData() {
+    window.clearData = function () {
       currentData = [];
       document.querySelector("#linkTable tbody").innerHTML = '';
       document.getElementById('copyAllBtn').disabled = true;
       document.getElementById('exportBtn').disabled = true;
-    }
+    };
 
-    function copyLink(link, btn) {
+    window.copyLink = function (link, btn) {
       navigator.clipboard.writeText(link).then(() => {
         const row = btn.closest("tr");
         row.classList.add("copied");
         btn.textContent = "Copied";
         btn.disabled = true;
       });
-    }
+    };
 
-    function copyAllLinks() {
+    window.copyAllLinks = function () {
       const allLinks = currentData.map(r => r.link).join("\n");
       navigator.clipboard.writeText(allLinks).then(() => {
         alert("All links copied!");
       });
-    }
+    };
 
-    function exportToCSV() {
+    window.exportToCSV = function () {
       let csv = "Receipt No.,Sales Type,Generated Link\n";
       currentData.forEach(r => {
         if (r.link) {
@@ -229,7 +305,7 @@
       a.href = url;
       a.download = "survey_links.csv";
       a.click();
-    }
+    };
   </script>
 </body>
 </html>
