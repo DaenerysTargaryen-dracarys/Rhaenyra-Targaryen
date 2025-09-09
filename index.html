@@ -29,6 +29,20 @@
       box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
     }
 
+    .file-section {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input[type="file"], input[type="text"], input[type="password"] {
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #f5b7b1;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 300px;
+    }
+
     button {
       margin: 5px;
       padding: 10px 18px;
@@ -72,6 +86,16 @@
       color: #c0392b;
     }
 
+    tr.copied {
+      background: #fadbd8;
+      color: #922b21;
+      font-weight: bold;
+    }
+
+    #loginScreen {
+      text-align: center;
+    }
+
     #loginMessage {
       margin-top: 10px;
       color: #e84362;
@@ -92,17 +116,9 @@
     <p id="loginMessage"></p>
   </div>
 
-  <!-- App Screen (Normal User) -->
+  <!-- App Screen -->
   <div id="appScreen" class="container" style="display:none;">
     <button onclick="logout()">Logout</button>
-
-    <!-- User Info Section -->
-    <div id="userInfo" style="margin:15px 0; text-align:left; font-weight:bold; color:#c0392b;">
-      <p>Manager Name: Pradeep Raj</p>
-      <p>Store Code: K281</p>
-      <p id="statusText">User Status: Active ✅</p>
-      <p id="daysRemaining">Days Remaining: --</p>
-    </div>
 
     <div class="file-section">
       <h3>Upload Excel File</h3>
@@ -130,127 +146,202 @@
     </table>
   </div>
 
-  <!-- Admin Panel -->
-  <div id="adminScreen" class="container" style="display:none;">
-    <button onclick="logout()">Logout</button>
-    <h2>👑 Admin Panel - User Management</h2>
-    <table id="userTable">
-      <thead>
-        <tr>
-          <th>User ID</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="userTableBody">
-        <!-- Users will populate dynamically -->
-      </tbody>
-    </table>
-  </div>
+  <!-- XLSX library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-  <script>
-    // ✅ Dummy users with status
-    let users = {
-      user1: true, // true = active
-      user2: false,
-      user3: true
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCnFHygIpjdPzF4EaMZoKBzBTpiU0keQw0",
+      authDomain: "marvel-be93b.firebaseapp.com",
+      projectId: "marvel-be93b",
+      storageBucket: "marvel-be93b.firebasestorage.app",
+      messagingSenderId: "626647068839",
+      appId: "1:626647068839:web:90e88fae52fba975312b82",
+      measurementId: "G-V32XBZJZE4"
     };
 
-    // Populate admin table
-    function populateAdminTable() {
-      const tbody = document.getElementById("userTableBody");
-      tbody.innerHTML = "";
-      for (let userId in users) {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${userId}</td>
-          <td id="status-${userId}">${users[userId] ? "Active ✅" : "Inactive ❌"}</td>
-          <td>
-            <button onclick="toggleUser('${userId}')">${users[userId] ? "Deactivate" : "Activate"}</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      }
-    }
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-    // 🔑 Login
     window.login = function () {
-      const userId = document.getElementById("userId").value.trim();
-      const password = document.getElementById("password").value.trim();
+      const userId = document.getElementById("userId").value;
+      const password = document.getElementById("password").value;
+      const email = `${userId}@myapp.local`;
 
-      // 👉 Admin Login
-      if (userId === "Naveen" && password === "NaveenRusthin@25") {
-        document.getElementById("loginScreen").style.display = "none";
-        document.getElementById("adminScreen").style.display = "block";
-        populateAdminTable();
-        return;
-      }
-
-      // 👉 Normal User Login
-      if (users.hasOwnProperty(userId) && password) {
-        document.getElementById("loginScreen").style.display = "none";
-        document.getElementById("appScreen").style.display = "block";
-
-        // Set user status
-        document.getElementById("statusText").innerText = "User Status: " + (users[userId] ? "Active ✅" : "Inactive ❌");
-
-        // Check 30-day validity and activation
-        checkUserValidity(userId);
-      } else {
-        document.getElementById("loginMessage").innerText = "Invalid login!";
-      }
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          document.getElementById("loginScreen").style.display = "none";
+          document.getElementById("appScreen").style.display = "block";
+        })
+        .catch(err => {
+          document.getElementById("loginMessage").innerText = err.message;
+        });
     };
 
-    // 🔑 Signup (for demo)
     window.signup = function () {
-      document.getElementById("loginMessage").innerText = "✅ Signup successful (demo). Now login.";
+      const userId = document.getElementById("userId").value;
+      const password = document.getElementById("password").value;
+      const email = `${userId}@myapp.local`;
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          document.getElementById("loginMessage").innerText = "✅ Account created! Now login.";
+        })
+        .catch(err => {
+          document.getElementById("loginMessage").innerText = err.message;
+        });
     };
 
-    // 🔑 Logout
     window.logout = function () {
-      document.getElementById("loginScreen").style.display = "block";
-      document.getElementById("appScreen").style.display = "none";
-      document.getElementById("adminScreen").style.display = "none";
+      signOut(auth).then(() => {
+        document.getElementById("loginScreen").style.display = "block";
+        document.getElementById("appScreen").style.display = "none";
+      });
     };
 
-    // 👑 Admin: Toggle user status
-    window.toggleUser = function (userId) {
-      users[userId] = !users[userId];
-      const statusCell = document.getElementById("status-" + userId);
-      statusCell.innerText = users[userId] ? "Active ✅" : "Inactive ❌";
+    let currentData = [];
+    let copiedLinks = new Set(JSON.parse(localStorage.getItem("copiedLinks") || "[]")); // ✅ persistent
 
-      const actionBtn = statusCell.nextElementSibling.querySelector("button");
-      actionBtn.innerText = users[userId] ? "Deactivate" : "Activate";
+    const storeID = "91KDIPL879-01";
 
-      alert(userId + (users[userId] ? " has been activated" : " has been deactivated"));
-    };
-
-    // Check 30-day expiry and enable/disable buttons
-    function checkUserValidity(userId) {
-      const today = new Date();
-      const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0); // last day of month
-      const daysLeft = Math.ceil((endOfMonth - today) / (1000 * 60 * 60 * 24));
-
-      document.getElementById("daysRemaining").innerText = "Days Remaining: " + daysLeft;
-
-      const fileInput = document.getElementById("fileInput");
-      const generateBtn = document.getElementById("generateBtn");
-      const copyAllBtn = document.getElementById("copyAllBtn");
-      const exportBtn = document.getElementById("exportBtn");
-
-      if (!users[userId] || daysLeft <= 0) {
-        fileInput.disabled = true;
-        generateBtn.disabled = true;
-        copyAllBtn.disabled = true;
-        exportBtn.disabled = true;
-        alert("Your access is inactive or expired! Contact admin.");
-      } else {
-        fileInput.disabled = false;
-        generateBtn.disabled = false;
-        copyAllBtn.disabled = false;
-        exportBtn.disabled = false;
-      }
+    function convertExcelDate(serial) {
+      const date = new Date((serial - 25569) * 86400 * 1000);
+      return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
     }
+
+    function convertExcelTime(serial) {
+      const totalMilliseconds = Math.round(serial * 24 * 60 * 60 * 1000);
+      const hours = String(Math.floor(totalMilliseconds / (60 * 60 * 1000))).padStart(2,'0');
+      const minutes = String(Math.floor((totalMilliseconds % (60 * 60 * 1000)) / (60 * 1000))).padStart(2,'0');
+      const seconds = String(Math.floor((totalMilliseconds % (60 * 1000)) / 1000)).padStart(2,'0');
+      return `${hours}:${minutes}:${seconds}`;
+    }
+
+    function generateSurveyLink(row) {
+      const receiptNo = row['Receipt No.'];
+      const salesType = row['Sales Type'];
+      let surveyModel = '', orderID = '', numericOT = '';
+
+      if (/^\d+$/.test(receiptNo) && salesType === 'TAKEAWAY') { surveyModel = '6.0'; orderID = receiptNo; numericOT = '2'; }
+      else if (/^\d+$/.test(receiptNo) && salesType === 'DINE-IN') { surveyModel = '6.0'; orderID = receiptNo; numericOT = '1'; }
+      else if (receiptNo.startsWith('K281') && salesType === 'TAKEAWAY') { surveyModel = '4.0'; orderID = receiptNo.slice(-4); numericOT = '2'; }
+      else if (receiptNo.startsWith('K281') && salesType === 'DINE-IN') { surveyModel = '4.0'; orderID = receiptNo.slice(-4); numericOT = '1'; }
+      else if (receiptNo.startsWith('K281') && salesType === 'DELIVERY') { surveyModel = '3.0'; orderID = receiptNo; numericOT = '3'; }
+      else { return null; }
+
+      const date = convertExcelDate(row['Date']);
+      const time = convertExcelTime(row['Time']);
+      const phoneNumber = `91${row['Sell-to Contact No.']}`;
+      const isoDateTime = `${date}T${time}Z`;
+
+      const data = { "S": storeID, "OI": orderID, "D": date, "TM": time, "DTM": isoDateTime, "TI": orderID, "OT": numericOT, "SM": surveyModel, "PH": phoneNumber };
+      const encodedData = btoa(JSON.stringify(data));
+      return `https://customer.kfc-listens.com/jfe/form/SV_8bHC0noyvM3jPWC?Q_EED=${encodedData}`;
+    }
+
+    document.getElementById('fileInput').addEventListener('change', () => {
+      document.getElementById('generateBtn').disabled = false;
+    });
+
+    window.processFile = function () {
+      const file = document.getElementById('fileInput').files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const rows = XLSX.utils.sheet_to_json(sheet);
+
+        currentData = rows.map(row => {
+          const link = generateSurveyLink(row);
+          return { ...row, link };
+        });
+
+        renderTable();
+      };
+      reader.readAsArrayBuffer(file);
+    };
+
+    function renderTable() {
+      const tbody = document.querySelector("#linkTable tbody");
+      tbody.innerHTML = '';
+      currentData.forEach(row => {
+        if (row.link) {
+          const tr = document.createElement('tr');
+          if (copiedLinks.has(row.link)) {
+            // already copied
+            tr.classList.add("copied");
+            tr.innerHTML = `
+              <td>${row['Receipt No.']}</td>
+              <td>${row['Sales Type']}</td>
+              <td><button disabled>Copied</button></td>
+            `;
+          } else {
+            // not copied yet
+            tr.innerHTML = `
+              <td>${row['Receipt No.']}</td>
+              <td>${row['Sales Type']}</td>
+              <td><button onclick="copyLink('${row.link}', this)">Copy</button></td>
+            `;
+          }
+          tbody.appendChild(tr);
+        }
+      });
+      document.getElementById('copyAllBtn').disabled = false;
+      document.getElementById('exportBtn').disabled = false;
+    }
+
+    window.clearData = function () {
+      currentData = [];
+      document.querySelector("#linkTable tbody").innerHTML = '';
+      document.getElementById('copyAllBtn').disabled = true;
+      document.getElementById('exportBtn').disabled = true;
+    };
+
+    window.copyLink = function (link, btn) {
+      navigator.clipboard.writeText(link).then(() => {
+        copiedLinks.add(link);
+        localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks])); // ✅ save
+        const row = btn.closest("tr");
+        row.classList.add("copied");
+        btn.textContent = "Copied";
+        btn.disabled = true;
+      });
+    };
+
+    window.copyAllLinks = function () {
+      const allLinks = currentData.map(r => r.link).join("\n");
+      navigator.clipboard.writeText(allLinks).then(() => {
+        currentData.forEach(r => {
+          if (r.link) copiedLinks.add(r.link);
+        });
+        localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks])); // ✅ save all
+        renderTable(); // refresh table with copied state
+        alert("All links copied!");
+      });
+    };
+
+    window.exportToCSV = function () {
+      let csv = "Receipt No.,Sales Type,Generated Link\n";
+      currentData.forEach(r => {
+        if (r.link) {
+          csv += `${r['Receipt No.']},${r['Sales Type']},${r.link}\n`;
+        }
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = "survey_links.csv";
+      a.click();
+    };
   </script>
 </body>
 </html>
