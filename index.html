@@ -204,6 +204,8 @@
     };
 
     let currentData = [];
+    let copiedLinks = new Set(JSON.parse(localStorage.getItem("copiedLinks") || "[]")); // ✅ persistent
+
     const storeID = "91KDIPL879-01";
 
     function convertExcelDate(serial) {
@@ -273,11 +275,22 @@
       currentData.forEach(row => {
         if (row.link) {
           const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${row['Receipt No.']}</td>
-            <td>${row['Sales Type']}</td>
-            <td><button onclick="copyLink('${row.link}', this)">Copy</button></td>
-          `;
+          if (copiedLinks.has(row.link)) {
+            // already copied
+            tr.classList.add("copied");
+            tr.innerHTML = `
+              <td>${row['Receipt No.']}</td>
+              <td>${row['Sales Type']}</td>
+              <td><button disabled>Copied</button></td>
+            `;
+          } else {
+            // not copied yet
+            tr.innerHTML = `
+              <td>${row['Receipt No.']}</td>
+              <td>${row['Sales Type']}</td>
+              <td><button onclick="copyLink('${row.link}', this)">Copy</button></td>
+            `;
+          }
           tbody.appendChild(tr);
         }
       });
@@ -294,6 +307,8 @@
 
     window.copyLink = function (link, btn) {
       navigator.clipboard.writeText(link).then(() => {
+        copiedLinks.add(link);
+        localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks])); // ✅ save
         const row = btn.closest("tr");
         row.classList.add("copied");
         btn.textContent = "Copied";
@@ -304,6 +319,11 @@
     window.copyAllLinks = function () {
       const allLinks = currentData.map(r => r.link).join("\n");
       navigator.clipboard.writeText(allLinks).then(() => {
+        currentData.forEach(r => {
+          if (r.link) copiedLinks.add(r.link);
+        });
+        localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks])); // ✅ save all
+        renderTable(); // refresh table with copied state
         alert("All links copied!");
       });
     };
@@ -325,5 +345,3 @@
   </script>
 </body>
 </html>
-
-
