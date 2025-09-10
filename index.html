@@ -112,7 +112,6 @@
     <input type="text" id="userId" placeholder="User ID"><br>
     <input type="password" id="password" placeholder="Password"><br>
     <button onclick="login()">Login</button>
-    <button onclick="signup()">Sign Up</button>
     <p id="loginMessage"></p>
   </div>
 
@@ -152,7 +151,7 @@
   <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCnFHygIpjdPzF4EaMZoKBzBTpiU0keQw0",
@@ -176,20 +175,6 @@
         .then(() => {
           document.getElementById("loginScreen").style.display = "none";
           document.getElementById("appScreen").style.display = "block";
-        })
-        .catch(err => {
-          document.getElementById("loginMessage").innerText = err.message;
-        });
-    };
-
-    window.signup = function () {
-      const userId = document.getElementById("userId").value;
-      const password = document.getElementById("password").value;
-      const email = `${userId}@myapp.local`;
-
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          document.getElementById("loginMessage").innerText = "✅ Account created! Now login.";
         })
         .catch(err => {
           document.getElementById("loginMessage").innerText = err.message;
@@ -276,7 +261,6 @@
         if (row.link) {
           const tr = document.createElement('tr');
           if (copiedLinks.has(row.link)) {
-            // already copied
             tr.classList.add("copied");
             tr.innerHTML = `
               <td>${row['Receipt No.']}</td>
@@ -284,7 +268,6 @@
               <td><button disabled>Copied</button></td>
             `;
           } else {
-            // not copied yet
             tr.innerHTML = `
               <td>${row['Receipt No.']}</td>
               <td>${row['Sales Type']}</td>
@@ -308,7 +291,7 @@
     window.copyLink = function (link, btn) {
       navigator.clipboard.writeText(link).then(() => {
         copiedLinks.add(link);
-        localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks])); // ✅ save
+        localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks]));
         const row = btn.closest("tr");
         row.classList.add("copied");
         btn.textContent = "Copied";
@@ -322,8 +305,8 @@
         currentData.forEach(r => {
           if (r.link) copiedLinks.add(r.link);
         });
-        localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks])); // ✅ save all
-        renderTable(); // refresh table with copied state
+        localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks]));
+        renderTable();
         alert("All links copied!");
       });
     };
