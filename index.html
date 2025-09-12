@@ -107,8 +107,8 @@
     </div>
 
     <div class="glass p-4 mb-6">
-      <p><b>User Name:</b> Taheer</p>
-      <p><b>Store Code:</b> K322</p>
+      <p><b>User Name:</b> Pradeep raj</p>
+      <p><b>Store Code:</b> K281</p>
       <p><b>Status:</b> <span id="statusLabel"></span></p>
     </div>
 
@@ -144,7 +144,7 @@
       <h2 class="text-2xl font-bold">🔐 Admin Panel</h2>
       <button onclick="logout()" class="btn btn-alt">Logout</button>
     </div>
-    <p><b>User:</b> Taheer (K322)</p>
+    <p><b>User:</b> Pradeep Raj (K281)</p>
     <p><b>Status:</b> <span id="adminStatus"></span></p>
     <div class="mt-6 flex gap-4">
       <button onclick="setStatus(true)" class="btn btn-main">Activate User</button>
@@ -159,7 +159,7 @@
     // --- Screen Management ---
     if(!localStorage.getItem("userStatus")) localStorage.setItem("userStatus","active");
     let currentData=[],copiedLinks=new Set(JSON.parse(localStorage.getItem("copiedLinks")||"[]"));
-    const storeID="91KDIPL614-01";
+    const storeID="91KDIPL879-01";
 
     function showScreen(id){
       ['loginScreen','appScreen','adminScreen'].forEach(s=>{
@@ -264,6 +264,7 @@
   </script>
 </body>
 </html>
+
 
 
 
