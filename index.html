@@ -107,7 +107,7 @@
     </div>
 
     <div class="glass p-4 mb-6">
-      <p><b>Manager Name:</b> Pradeep Raj</p>
+      <p><b>User Name:</b> Pradeep Raj</p>
       <p><b>Store Code:</b> K281</p>
       <p><b>Status:</b> <span id="statusLabel"></span></p>
     </div>
@@ -232,7 +232,7 @@
         if(row.link){
           const tr=document.createElement('tr');
           if(copiedLinks.has(row.link)){
-            tr.classList.add("copied");
+            tr.classList.add("Alreadycopied");
             tr.innerHTML=`<td>${row['Receipt No.']}</td><td>${row['Sales Type']}</td><td><button disabled class="btn btn-alt">Copied</button></td>`;
           }else{
             tr.innerHTML=`<td>${row['Receipt No.']}</td><td>${row['Sales Type']}</td><td><button onclick="copyLink('${row.link}', this)" class="btn btn-main">Copy</button></td>`;
@@ -264,3 +264,4 @@
   </script>
 </body>
 </html>
+
