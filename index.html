@@ -1,277 +1,139 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Home - Survey Generator</title>
-
+  <title>Home - KFC Survey Link Generator</title>
   <script src="https://cdn.tailwindcss.com"></script>
-
   <style>
-
     body {
-
       background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-
       background-size: 400% 400%;
-
       animation: aurora 15s ease infinite;
-
       font-family: "Segoe UI", Arial, sans-serif;
-
     }
-
     @keyframes aurora {
-
       0% { background-position: 0% 50%; }
-
       50% { background-position: 100% 50%; }
-
       100% { background-position: 0% 50%; }
-
     }
-
     .glass { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(12px); border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); transition: 0.3s ease;}
-
     .glass:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(0,0,0,0.4);}
-
     .btn { padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: transform 0.2s, opacity 0.3s;}
-
     .btn-main { background: linear-gradient(to right,#ff758c,#ff7eb3); color: white;}
-
     .btn-main:hover { transform: scale(1.05);}
-
     .btn-alt { background: rgba(255,255,255,0.2); color: white;}
-
     .btn-alt:hover { transform: scale(1.05);}
-
     input:focus { border-color: #ff7eb3; box-shadow: 0 0 8px rgba(255,126,179,0.7); outline: none;}
-
     table { width: 100%; border-collapse: collapse;}
-
     th, td { padding: 10px; text-align: center; border: 1px solid rgba(255,255,255,0.3);}
-
     th { background: rgba(255,255,255,0.2); color: #fff;}
-
     tr:hover { background: rgba(255,255,255,0.25); cursor: pointer; transition: 0.3s;}
-
     tr.copied { background: rgba(255,255,255,0.3); color: #222; font-weight: bold; }
-
     .fade { opacity: 0; transition: opacity 0.5s;}
-
     .fade.show { opacity: 1; }
-
     #loader { display: none; text-align: center; font-weight: bold; margin-top: 10px;}
-
   </style>
-
 </head>
-
 <body class="min-h-screen flex items-center justify-center p-4 text-white">
-
   <div class="glass p-6 w-full max-w-4xl fade show">
-
     <div class="flex flex-col items-center mb-6">
-
-      <h2 class="text-3xl font-bold mb-2">Survey Generator </h2>
-
-      <p class="text-lg mb-2">(Store Name :Horamavu) (Store Code: K322)</p>
-
+      <h2 class="text-3xl font-bold mb-2">KFC Survey Link Generator</h2>
+      <p class="text-lg mb-2">Horamavu (Store Code: K281)</p>
     </div>
-
     <div class="glass p-4 mb-6">
-
       <h3 class="text-xl mb-4">📂 Upload Excel File</h3>
-
       <input type="file" id="fileInput" accept=".xlsx, .xls" class="mb-4">
-
       <div class="flex flex-wrap gap-3">
-
         <button id="generateBtn" onclick="processFile()" class="btn btn-main">Generate Links</button>
-
         <button onclick="clearData()" class="btn btn-alt">Clear All</button>
-
         <button id="copyAllBtn" onclick="copyAllLinks()" disabled class="btn btn-alt">Copy All</button>
-
         <button id="exportBtn" onclick="exportToCSV()" disabled class="btn btn-alt">Export CSV</button>
-
       </div>
-
       <div id="loader">⏳ Generating Links...</div>
-
     </div>
-
     <div class="glass p-4 overflow-x-auto">
-
       <table id="linkTable">
-
         <thead>
-
           <tr>
-
             <th>Receipt No.</th>
-
             <th>Sales Type</th>
-
             <th>Action</th>
-
           </tr>
-
         </thead>
-
         <tbody class="text-black bg-white/60"></tbody>
-
       </table>
-
     </div>
-
   </div>
-
   <!-- XLSX Library -->
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
   <script>
-
     let currentData=[],copiedLinks=new Set(JSON.parse(localStorage.getItem("copiedLinks")||"[]"));
-
-    const storeID="91KDIPL614-01";
-
+    const storeID="91KDIPL879-01";
     document.getElementById('fileInput')?.addEventListener('change',()=>{document.getElementById('generateBtn').disabled=false;});
-
     function processFile(){
-
       const file=document.getElementById('fileInput').files[0];if(!file)return;
-
       document.getElementById('loader').style.display='block';
-
       const reader=new FileReader();
-
       reader.onload=function(e){
-
         const data=new Uint8Array(e.target.result);
-
         const wb=XLSX.read(data,{type:'array'});
-
         const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
-
         currentData=rows.map(r=>({...r,link:generateSurveyLink(r)}));
-
         renderTable();
-
         document.getElementById('loader').style.display='none';
-
       };
-
       reader.readAsArrayBuffer(file);
-
     }
-
     function renderTable(){
-
       const tbody=document.querySelector("#linkTable tbody");tbody.innerHTML='';
-
       currentData.forEach(row=>{
-
         if(row.link){
-
           const tr=document.createElement('tr');
-
           if(copiedLinks.has(row.link)){
-
             tr.classList.add("copied");
-
             tr.innerHTML=`<td>${row['Receipt No.']}</td><td>${row['Sales Type']}</td><td><button disabled class="btn btn-alt">Copied</button></td>`;
-
           }else{
-
             tr.innerHTML=`<td>${row['Receipt No.']}</td><td>${row['Sales Type']}</td><td><button onclick="copyLink('${row.link}', this)" class="btn btn-main">Copy</button></td>`;
-
           }
-
           tbody.appendChild(tr);
-
         }
-
       });
-
       document.getElementById('copyAllBtn').disabled=false;
-
       document.getElementById('exportBtn').disabled=false;
-
     }
-
     function clearData(){currentData=[];document.querySelector("#linkTable tbody").innerHTML='';document.getElementById('copyAllBtn').disabled=true;document.getElementById('exportBtn').disabled=true;}
-
     function copyLink(link,btn){navigator.clipboard.writeText(link).then(()=>{copiedLinks.add(link);localStorage.setItem("copiedLinks",JSON.stringify([...copiedLinks]));btn.textContent="Copied";btn.disabled=true;btn.closest('tr').classList.add('copied');});}
-
     function copyAllLinks(){
-
       if(currentData.length===0)return alert("No links to copy!");
-
       const allLinks=currentData.map(r=>r.link).filter(Boolean).join("\n");
-
       navigator.clipboard.writeText(allLinks).then(()=>{
-
         currentData.forEach(r=>r.link?copiedLinks.add(r.link):null);
-
         localStorage.setItem("copiedLinks",JSON.stringify([...copiedLinks]));
-
         renderTable();alert("All links copied!");
-
       });
-
     }
-
     function exportToCSV(){
-
       let csv="Receipt No.,Sales Type,Generated Link\n";
-
       currentData.forEach(r=>r.link?csv+=`${r['Receipt No.']},${r['Sales Type']},${r.link}\n`:null);
-
       const blob=new Blob([csv],{type:'text/csv'});
-
       const url=URL.createObjectURL(blob);
-
       const a=document.createElement('a');a.href=url;a.download="survey_links.csv";a.click();
-
     }
-
     function generateSurveyLink(row){
-
       const receipt=row['Receipt No.'], sales=row['Sales Type'];
-
       let SM='',OI='',OT='';
-
-      if(receipt.startsWith('K322') && sales==='TAKEAWAY'){SM='4.0';OI=receipt.slice(-4);OT='2';}
-
-      else if(receipt.startsWith('K322') && sales==='DINE-IN'){SM='4.0';OI=receipt.slice(-4);OT='1';}
-
-      else if(receipt.startsWith('K322') && sales==='DELIVERY'){SM='3.0';OI=receipt;OT='3';}
-
+      if(receipt.startsWith('K281') && sales==='TAKEAWAY'){SM='4.0';OI=receipt.slice(-4);OT='2';}
+      else if(receipt.startsWith('K281') && sales==='DINE-IN'){SM='4.0';OI=receipt.slice(-4);OT='1';}
+      else if(receipt.startsWith('K281') && sales==='DELIVERY'){SM='3.0';OI=receipt;OT='3';}
       else return null;
-
       const D=convertExcelDate(row['Date']);const TM=convertExcelTime(row['Time']);
-
       const PH=`91${row['Sell-to Contact No.']}`;const DTM=`${D}T${TM}Z`;
-
       const data={"S":storeID,"OI":OI,"D":D,"TM":TM,"DTM":DTM,"TI":OI,"OT":OT,"SM":SM,"PH":PH};
-
       return `https://customer.kfc-listens.com/jfe/form/SV_8bHC0noyvM3jPWC?Q_EED=${btoa(JSON.stringify(data))}`;
-
     }
-
     function convertExcelDate(serial){if(!serial||isNaN(serial))return"";const date=new Date((serial-25569)*86400*1000);return`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;}
-
     function convertExcelTime(serial){if(!serial||isNaN(serial))return"";const totalMs=Math.round(serial*24*60*60*1000);const h=String(Math.floor(totalMs/(60*60*1000))).padStart(2,'0');const m=String(Math.floor((totalMs%(60*60*1000))/(60*1000))).padStart(2,'0');const s=String(Math.floor((totalMs%(60*1000))/1000)).padStart(2,'0');return`${h}:${m}:${s}`;}
-
   </script>
-
 </body>
-
 </html>
