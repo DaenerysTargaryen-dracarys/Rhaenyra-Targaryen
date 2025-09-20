@@ -1,139 +1,553 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home - KFC Survey Link Generator</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body {
-      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-      background-size: 400% 400%;
-      animation: aurora 15s ease infinite;
-      font-family: "Segoe UI", Arial, sans-serif;
-    }
-    @keyframes aurora {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    .glass { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(12px); border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); transition: 0.3s ease;}
-    .glass:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(0,0,0,0.4);}
-    .btn { padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: transform 0.2s, opacity 0.3s;}
-    .btn-main { background: linear-gradient(to right,#ff758c,#ff7eb3); color: white;}
-    .btn-main:hover { transform: scale(1.05);}
-    .btn-alt { background: rgba(255,255,255,0.2); color: white;}
-    .btn-alt:hover { transform: scale(1.05);}
-    input:focus { border-color: #ff7eb3; box-shadow: 0 0 8px rgba(255,126,179,0.7); outline: none;}
-    table { width: 100%; border-collapse: collapse;}
-    th, td { padding: 10px; text-align: center; border: 1px solid rgba(255,255,255,0.3);}
-    th { background: rgba(255,255,255,0.2); color: #fff;}
-    tr:hover { background: rgba(255,255,255,0.25); cursor: pointer; transition: 0.3s;}
-    tr.copied { background: rgba(255,255,255,0.3); color: #222; font-weight: bold; }
-    .fade { opacity: 0; transition: opacity 0.5s;}
-    .fade.show { opacity: 1; }
-    #loader { display: none; text-align: center; font-weight: bold; margin-top: 10px;}
-  </style>
-</head>
-<body class="min-h-screen flex items-center justify-center p-4 text-white">
-  <div class="glass p-6 w-full max-w-4xl fade show">
-    <div class="flex flex-col items-center mb-6">
-      <h2 class="text-3xl font-bold mb-2">KFC Survey Link Generator</h2>
-      <p class="text-lg mb-2">Horamavu (Store Code: K281)</p>
-    </div>
-    <div class="glass p-4 mb-6">
-      <h3 class="text-xl mb-4">📂 Upload Excel File</h3>
-      <input type="file" id="fileInput" accept=".xlsx, .xls" class="mb-4">
-      <div class="flex flex-wrap gap-3">
-        <button id="generateBtn" onclick="processFile()" class="btn btn-main">Generate Links</button>
-        <button onclick="clearData()" class="btn btn-alt">Clear All</button>
-        <button id="copyAllBtn" onclick="copyAllLinks()" disabled class="btn btn-alt">Copy All</button>
-        <button id="exportBtn" onclick="exportToCSV()" disabled class="btn btn-alt">Export CSV</button>
-      </div>
-      <div id="loader">⏳ Generating Links...</div>
-    </div>
-    <div class="glass p-4 overflow-x-auto">
-      <table id="linkTable">
-        <thead>
-          <tr>
-            <th>Receipt No.</th>
-            <th>Sales Type</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody class="text-black bg-white/60"></tbody>
-      </table>
-    </div>
-  </div>
-  <!-- XLSX Library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script>
-    let currentData=[],copiedLinks=new Set(JSON.parse(localStorage.getItem("copiedLinks")||"[]"));
-    const storeID="91KDIPL879-01";
-    document.getElementById('fileInput')?.addEventListener('change',()=>{document.getElementById('generateBtn').disabled=false;});
-    function processFile(){
-      const file=document.getElementById('fileInput').files[0];if(!file)return;
-      document.getElementById('loader').style.display='block';
-      const reader=new FileReader();
-      reader.onload=function(e){
-        const data=new Uint8Array(e.target.result);
-        const wb=XLSX.read(data,{type:'array'});
-        const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
-        currentData=rows.map(r=>({...r,link:generateSurveyLink(r)}));
-        renderTable();
-        document.getElementById('loader').style.display='none';
-      };
-      reader.readAsArrayBuffer(file);
-    }
-    function renderTable(){
-      const tbody=document.querySelector("#linkTable tbody");tbody.innerHTML='';
-      currentData.forEach(row=>{
-        if(row.link){
-          const tr=document.createElement('tr');
-          if(copiedLinks.has(row.link)){
-            tr.classList.add("copied");
-            tr.innerHTML=`<td>${row['Receipt No.']}</td><td>${row['Sales Type']}</td><td><button disabled class="btn btn-alt">Copied</button></td>`;
-          }else{
-            tr.innerHTML=`<td>${row['Receipt No.']}</td><td>${row['Sales Type']}</td><td><button onclick="copyLink('${row.link}', this)" class="btn btn-main">Copy</button></td>`;
-          }
-          tbody.appendChild(tr);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - KFC Survey Link Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
         }
-      });
-      document.getElementById('copyAllBtn').disabled=false;
-      document.getElementById('exportBtn').disabled=false;
-    }
-    function clearData(){currentData=[];document.querySelector("#linkTable tbody").innerHTML='';document.getElementById('copyAllBtn').disabled=true;document.getElementById('exportBtn').disabled=true;}
-    function copyLink(link,btn){navigator.clipboard.writeText(link).then(()=>{copiedLinks.add(link);localStorage.setItem("copiedLinks",JSON.stringify([...copiedLinks]));btn.textContent="Copied";btn.disabled=true;btn.closest('tr').classList.add('copied');});}
-    function copyAllLinks(){
-      if(currentData.length===0)return alert("No links to copy!");
-      const allLinks=currentData.map(r=>r.link).filter(Boolean).join("\n");
-      navigator.clipboard.writeText(allLinks).then(()=>{
-        currentData.forEach(r=>r.link?copiedLinks.add(r.link):null);
-        localStorage.setItem("copiedLinks",JSON.stringify([...copiedLinks]));
-        renderTable();alert("All links copied!");
-      });
-    }
-    function exportToCSV(){
-      let csv="Receipt No.,Sales Type,Generated Link\n";
-      currentData.forEach(r=>r.link?csv+=`${r['Receipt No.']},${r['Sales Type']},${r.link}\n`:null);
-      const blob=new Blob([csv],{type:'text/csv'});
-      const url=URL.createObjectURL(blob);
-      const a=document.createElement('a');a.href=url;a.download="survey_links.csv";a.click();
-    }
-    function generateSurveyLink(row){
-      const receipt=row['Receipt No.'], sales=row['Sales Type'];
-      let SM='',OI='',OT='';
-      if(receipt.startsWith('K281') && sales==='TAKEAWAY'){SM='4.0';OI=receipt.slice(-4);OT='2';}
-      else if(receipt.startsWith('K281') && sales==='DINE-IN'){SM='4.0';OI=receipt.slice(-4);OT='1';}
-      else if(receipt.startsWith('K281') && sales==='DELIVERY'){SM='3.0';OI=receipt;OT='3';}
-      else return null;
-      const D=convertExcelDate(row['Date']);const TM=convertExcelTime(row['Time']);
-      const PH=`91${row['Sell-to Contact No.']}`;const DTM=`${D}T${TM}Z`;
-      const data={"S":storeID,"OI":OI,"D":D,"TM":TM,"DTM":DTM,"TI":OI,"OT":OT,"SM":SM,"PH":PH};
-      return `https://customer.kfc-listens.com/jfe/form/SV_8bHC0noyvM3jPWC?Q_EED=${btoa(JSON.stringify(data))}`;
-    }
-    function convertExcelDate(serial){if(!serial||isNaN(serial))return"";const date=new Date((serial-25569)*86400*1000);return`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;}
-    function convertExcelTime(serial){if(!serial||isNaN(serial))return"";const totalMs=Math.round(serial*24*60*60*1000);const h=String(Math.floor(totalMs/(60*60*1000))).padStart(2,'0');const m=String(Math.floor((totalMs%(60*60*1000))/(60*1000))).padStart(2,'0');const s=String(Math.floor((totalMs%(60*1000))/1000)).padStart(2,'0');return`${h}:${m}:${s}`;}
-  </script>
-</body>
-</html>
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+            background-size: 500% 500%;
+            animation: gradientShift 20s ease infinite;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><radialGradient id="dot" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color:white;stop-opacity:0.1"/><stop offset="100%" style="stop-color:white;stop-opacity:0"/></radialGradient></defs><circle cx="20" cy="20" r="1.5" fill="url(%23dot)"/><circle cx="80" cy="40" r="1" fill="url(%23dot)"/><circle cx="40" cy="70" r="1.2" fill="url(%23dot)"/><circle cx="90" cy="80" r="1.5" fill="url(%23dot)"/><circle cx="10" cy="90" r="0.8" fill="url(%23dot)"/></svg>') repeat;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            25% { background-position: 100% 25%; }
+            50% { background-position: 50% 100%; }
+            75% { background-position: 25% 0%; }
+        }
+
+        .glass-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 32px;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .glass-container:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 
+                0 35px 70px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+
+        .glass-section {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            box-shadow: 
+                0 15px 30px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .glass-section:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            position: relative;
+            padding: 0.75rem 1.5rem;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52, #ff8e8e);
+            color: white;
+            box-shadow: 
+                0 8px 25px rgba(255, 107, 107, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 
+                0 12px 35px rgba(255, 107, 107, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-display {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .file-input-display:hover {
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .file-input-display.dragover {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .modern-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .modern-table th {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 1.25rem 1rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modern-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+        }
+
+        .modern-table tr:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.01);
+        }
+
+        .modern-table tr.copied {
+            background: rgba(76, 175, 80, 0.2);
+            color: white;
+        }
+
+        .modern-table tr.copied td {
+            color: white;
+            font-weight: 600;
+        }
+
+        .icon {
+            display: inline-block;
+            margin-right: 0.5rem;
+            font-size: 1.1em;
+        }
+
+        .loader {
+            display: none;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+            margin: 1rem 0;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ff6b6b;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in:nth-child(2) { animation-delay: 0.1s; }
+        .fade-in:nth-child(3) { animation-delay: 0.2s; }
+        .fade-in:nth-child(4) { animation-delay: 0.3s; }
+
+        @media (max-width: 768px) {
+            .glass-container {
+                margin: 1rem;
+                border-radius: 24px;
+            }
+            
+            .btn {
+                padding: 0.75rem 1.25rem;
+                font-size: 0.9rem;
+            }
+            
+            .modern-table {
+                font-size: 0.85rem;
+            }
+            
+            .modern-table th,
+            .modern-table td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-4 text-white">
+    <div class="glass-container p-8 w-full max-w-6xl fade-in">
+        <!-- Header Section -->
+        <div class="text-center mb-8 fade-in">
+            <div class="mb-4">
+                <span class="text-6xl">🍗</span>
+            </div>
+            <h1 class="text-4xl font-bold mb-3 bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
+                KFC Survey Link Generator
+            </h1>
+            <p class="text-xl text-white/80 mb-2">Store Name: Horamavu</p>
+            <div class="inline-flex items-center bg-white/10 px-4 py-2 rounded-full">
+                <span class="icon">🏪</span>
+                <span class="font-semibold">Store Code: K281</span>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-grid mb-8 fade-in">
+            <div class="stat-card">
+                <div class="stat-value" id="totalLinks">0</div>
+                <div class="stat-label">Total Links</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="copiedCount">0</div>
+                <div class="stat-label">Copied</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="pendingCount">0</div>
+                <div class="stat-label">Pending</div>
+            </div>
+        </div>
+
+        <!-- File Upload Section -->
+        <div class="glass-section p-6 mb-8 fade-in">
+            <h3 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="icon">📂</span>
+                Upload Excel File
+            </h3>
+            
+            <div class="file-input-wrapper mb-6">
+                <input type="file" id="fileInput" accept=".xlsx, .xls" class="file-input">
+                <div class="file-input-display" id="fileInputDisplay">
+                    <div class="text-4xl mb-3">📄</div>
+                    <div class="text-lg font-semibold mb-2">Drop your Excel file here</div>
+                    <div class="text-sm text-white/70">or click to browse</div>
+                    <div class="text-xs text-white/60 mt-2">Supports .xlsx and .xls files</div>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-4 justify-center">
+                <button id="generateBtn" onclick="processFile()" disabled class="btn btn-primary">
+                    <span class="icon">⚡</span>Generate Links
+                </button>
+                <button onclick="clearData()" class="btn btn-secondary">
+                    <span class="icon">🗑️</span>Clear All
+                </button>
+                <button id="copyAllBtn" onclick="copyAllLinks()" disabled class="btn btn-secondary">
+                    <span class="icon">📋</span>Copy All
+                </button>
+                <button id="exportBtn" onclick="exportToCSV()" disabled class="btn btn-secondary">
+                    <span class="icon">📊</span>Export CSV
+                </button>
+            </div>
+
+            <div id="loader" class="loader">
+                <div class="text-lg">⏳ Generating survey links...</div>
+                <div class="text-sm mt-2">Please wait while we process your data</div>
+            </div>
+        </div>
+
+        <!-- Results Table Section -->
+        <div class="glass-section p-6 fade-in">
+            <h3 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="icon">📋</span>Generated Links
+            </h3>
+            
+            <div class="overflow-x-auto">
+                <table class="modern-table" id="linkTable">
+                    <thead>
+                        <tr>
+                            <th>Receipt No.</th>
+                            <th>Sales Type</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- XLSX Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        let currentData = [];
+        let copiedLinks = new Set(JSON.parse(localStorage.getItem("copiedLinks") || "[]"));
+        const storeID = "91KDIPL879-01";
+
+        // File input handling
+        const fileInput = document.getElementById('fileInput');
+        const fileInputDisplay = document.getElementById('fileInputDisplay');
+        const generateBtn = document.getElementById('generateBtn');
+
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                fileInputDisplay.innerHTML = `
+                    <div class="text-4xl mb-3">✅</div>
+                    <div class="text-lg font-semibold mb-2">${file.name}</div>
+                    <div class="text-sm text-white/70">File selected successfully</div>
+                `;
+                generateBtn.disabled = false;
+            }
+        });
+
+        // Drag and drop functionality
+        fileInputDisplay.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileInputDisplay.classList.add('dragover');
+        });
+
+        fileInputDisplay.addEventListener('dragleave', () => {
+            fileInputDisplay.classList.remove('dragover');
+        });
+
+        fileInputDisplay.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileInputDisplay.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        });
+
+        function processFile() {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            document.getElementById('loader').style.display = 'block';
+            generateBtn.disabled = true;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const wb = XLSX.read(data, { type: 'array' });
+                    const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+                    
+                    currentData = rows.map(r => ({
+                        ...r,
+                        link: generateSurveyLink(r)
+                    }));
+                    
+                    renderTable();
+                    updateStats();
+                    document.getElementById('loader').style.display = 'none';
+                    generateBtn.disabled = false;
+                    
+                    // Show success message
+                    showNotification(`Successfully generated ${currentData.length} survey links!`, 'success');
+                } catch (error) {
+                    console.error('Error processing file:', error);
+                    document.getElementById('loader').style.display = 'none';
+                    generateBtn.disabled = false;
+                    showNotification('Error processing file. Please check the format.', 'error');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function renderTable() {
+            const tbody = document.querySelector("#linkTable tbody");
+            tbody.innerHTML = '';
+            
+            currentData.forEach((row, index) => {
+                if (row.link) {
+                    const tr = document.createElement('tr');
+                    const isCopied = copiedLinks.has(row.link);
+                    
+                    if (isCopied) {
+                        tr.classList.add("copied");
+                    }
+                    
+                    tr.innerHTML = `
+                        <td><strong>${row['Receipt No.']}</strong></td>
+                        <td>
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getSalesTypeColor(row['Sales Type'])}">
+                                ${getSalesTypeIcon(row['Sales Type'])} ${row['Sales Type']}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${isCopied ? 'bg-green-500/20 text-green-300' : 'bg-yellow-500/20 text-yellow-300'}">
+                                ${isCopied ? '✅ Copied' : '⏳ Pending'}
+                            </span>
+                        </td>
+                        <td>
+                            ${isCopied 
+                                ? '<button disabled class="btn btn-secondary opacity-50">✅ Copied</button>'
+                                : `<button onclick="copyLink('${row.link}', this, ${index})" class="btn btn-primary">📋 Copy Link</button>`
+                            }
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            });
+            
+            document.getElementById('copyAllBtn').disabled = currentData.length === 0;
+            document.getElementById('exportBtn').disabled = currentData.length === 0;
+        }
+
+        function getSalesTypeColor(type) {
+            switch(type) {
+                case 'TAKEAWAY': return 'bg-blue-500/20 text-blue-300';
+                case 'DINE-IN': return 'bg-purple-500/20 text-purple-300';
+                case 'DELIVERY': return 'bg-green-500/20 text-green-300';
+                default: return 'bg-gray-500/20 text-gray-300';
+            }
+        }
+
+        function getSalesTypeIcon(type) {
+            switch(type) {
+                case 'TAKEAWAY': return '🥡';
+                case 'DINE-IN': return '🍽️';
+                case 'DELIVERY': return '🚚';
+                default: return '📦';
+            }
+        }
+
+        function updateStats() {
+            const totalLinks = currentData.filter(row => row.link).length;
+            const copiedCount = currentData.filter(row => row.link && copiedLinks.has(row.link)).length;
+            const pendingCount = totalLinks - copiedCount;
+            
+            document.getElementById('totalLinks').textContent = totalLinks;
+            document.getElementById('copiedCount').textContent = copiedCount;
+            document.getElementById('pendingCount').textContent = pendingCount;
+        }
+
+        function clearData() {
+            currentData = [];
+            document.querySelector("#linkTable tbody").innerHTML = '';
+            document.getElementById('copyAllBtn').disabled = tr
