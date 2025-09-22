@@ -7,45 +7,82 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
-      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+      background: linear-gradient(-45deg, #ffbe0b, #fb5607, #ff006e, #8338ec, #3a86ff);
       background-size: 400% 400%;
-      animation: aurora 15s ease infinite;
-      font-family: "Segoe UI", Arial, sans-serif;
+      animation: aurora 12s ease infinite;
+      font-family: "Comic Neue", cursive, sans-serif;
     }
     @keyframes aurora {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
-    .glass { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(12px); border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); transition: 0.3s ease;}
-    .glass:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(0,0,0,0.4);}
-    .btn { padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: transform 0.2s, opacity 0.3s;}
-    .btn-main { background: linear-gradient(to right,#ff758c,#ff7eb3); color: white;}
-    .btn-main:hover { transform: scale(1.05);}
-    .btn-alt { background: rgba(255,255,255,0.2); color: white;}
-    .btn-alt:hover { transform: scale(1.05);}
-    input:focus { border-color: #ff7eb3; box-shadow: 0 0 8px rgba(255,126,179,0.7); outline: none;}
-    table { width: 100%; border-collapse: collapse;}
-    th, td { padding: 10px; text-align: center; border: 1px solid rgba(255,255,255,0.3);}
-    th { background: rgba(255,255,255,0.2); color: #fff;}
-    tr:hover { background: rgba(255,255,255,0.25); cursor: pointer; transition: 0.3s;}
-    tr.copied { background: rgba(255,255,255,0.3); color: #222; font-weight: bold; }
-    .fade { opacity: 0; transition: opacity 0.5s;}
-    .fade.show { opacity: 1; }
-    #loader { display: none; text-align: center; font-weight: bold; margin-top: 10px;}
+    .glass {
+      background: rgba(255,255,255,0.15);
+      border: 2px solid #000;
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      box-shadow: 8px 8px 0px #000;
+      transition: 0.3s ease;
+    }
+    .glass:hover { transform: translateY(-5px) rotate(-1deg); }
+    .btn {
+      padding: 0.5rem 1.25rem;
+      border-radius: 0.5rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 4px 4px 0px #000;
+      transition: transform 0.2s, opacity 0.3s;
+      font-family: "Bangers", cursive;
+    }
+    .btn-main {
+      background: linear-gradient(to right,#ff006e,#fb5607);
+      color: white;
+      border: 2px solid #000;
+    }
+    .btn-main:hover { transform: scale(1.05) rotate(-2deg); }
+    .btn-alt {
+      background: #ffbe0b;
+      color: #000;
+      border: 2px solid #000;
+    }
+    .btn-alt:hover { transform: scale(1.05) rotate(2deg); }
+    input:focus {
+      border-color: #ff006e;
+      box-shadow: 0 0 8px rgba(255,0,110,0.7);
+      outline: none;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border: 2px solid #000;
+    }
+    th {
+      background: #ffbe0b;
+      color: #000;
+      font-family: "Bangers", cursive;
+      font-size: 1.1rem;
+    }
+    tr:hover { background: rgba(255,255,255,0.25); cursor: pointer; transition: 0.3s; }
+    tr.copied { background: #06d6a0; color: #000; font-weight: bold; }
+    #loader { display: none; text-align: center; font-weight: bold; margin-top: 10px; }
   </style>
+  <!-- Comic Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 text-white">
-  <div class="glass p-6 w-full max-w-4xl fade show">
+  <div class="glass p-6 w-full max-w-4xl">
     <div class="flex flex-col items-center mb-6">
-      <h2 class="text-3xl font-bold mb-2"> Survey Link Generator</h2>
-      <p class="text-lg mb-2">(Store Name :Horamavu) (Store Code: K281)</p>
+      <h2 class="text-4xl font-bold mb-2" style="font-family:'Bangers', cursive;">💥 Survey Link Generator 💥</h2>
+      <p class="text-lg mb-2">(Store Name: Horamavu) (Store Code: K281)</p>
     </div>
     <div class="glass p-4 mb-6">
-      <h3 class="text-xl mb-4">📂 Upload Excel File</h3>
+      <h3 class="text-2xl mb-4 font-bold" style="font-family:'Bangers', cursive;">📂 Upload Excel File</h3>
       <input type="file" id="fileInput" accept=".xlsx, .xls" class="mb-4">
       <div class="flex flex-wrap gap-3">
-        <button id="generateBtn" onclick="processFile()" class="btn btn-main">Generate Links</button>
+        <button id="generateBtn" onclick="processFile()" class="btn btn-main" disabled>Generate Links</button>
         <button onclick="clearData()" class="btn btn-alt">Clear All</button>
         <button id="copyAllBtn" onclick="copyAllLinks()" disabled class="btn btn-alt">Copy All</button>
         <button id="exportBtn" onclick="exportToCSV()" disabled class="btn btn-alt">Export CSV</button>
@@ -65,14 +102,20 @@
       </table>
     </div>
   </div>
+
   <!-- XLSX Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script>
-    let currentData=[],copiedLinks=new Set(JSON.parse(localStorage.getItem("copiedLinks")||"[]"));
-    const storeID="91KDIPL879-01";
-    document.getElementById('fileInput')?.addEventListener('change',()=>{document.getElementById('generateBtn').disabled=false;});
+    let currentData = [], copiedLinks = new Set(JSON.parse(localStorage.getItem("copiedLinks")||"[]"));
+    const storeID = "91KDIPL879-01";
+
+    document.getElementById('fileInput')?.addEventListener('change',()=>{
+      document.getElementById('generateBtn').disabled=false;
+    });
+
     function processFile(){
-      const file=document.getElementById('fileInput').files[0];if(!file)return;
+      const file=document.getElementById('fileInput').files[0];
+      if(!file)return;
       document.getElementById('loader').style.display='block';
       const reader=new FileReader();
       reader.onload=function(e){
@@ -85,6 +128,7 @@
       };
       reader.readAsArrayBuffer(file);
     }
+
     function renderTable(){
       const tbody=document.querySelector("#linkTable tbody");tbody.innerHTML='';
       currentData.forEach(row=>{
@@ -102,24 +146,44 @@
       document.getElementById('copyAllBtn').disabled=false;
       document.getElementById('exportBtn').disabled=false;
     }
-    function clearData(){currentData=[];document.querySelector("#linkTable tbody").innerHTML='';document.getElementById('copyAllBtn').disabled=true;document.getElementById('exportBtn').disabled=true;}
-    function copyLink(link,btn){navigator.clipboard.writeText(link).then(()=>{copiedLinks.add(link);localStorage.setItem("copiedLinks",JSON.stringify([...copiedLinks]));btn.textContent="Copied";btn.disabled=true;btn.closest('tr').classList.add('copied');});}
+
+    function clearData(){
+      currentData=[];
+      document.querySelector("#linkTable tbody").innerHTML='';
+      document.getElementById('copyAllBtn').disabled=true;
+      document.getElementById('exportBtn').disabled=true;
+    }
+
+    function copyLink(link,btn){
+      navigator.clipboard.writeText(link).then(()=>{
+        copiedLinks.add(link);
+        localStorage.setItem("copiedLinks",JSON.stringify([...copiedLinks]));
+        btn.textContent="Copied";
+        btn.disabled=true;
+        btn.closest('tr').classList.add('copied');
+      });
+    }
+
     function copyAllLinks(){
       if(currentData.length===0)return alert("No links to copy!");
       const allLinks=currentData.map(r=>r.link).filter(Boolean).join("\n");
       navigator.clipboard.writeText(allLinks).then(()=>{
         currentData.forEach(r=>r.link?copiedLinks.add(r.link):null);
         localStorage.setItem("copiedLinks",JSON.stringify([...copiedLinks]));
-        renderTable();alert("All links copied!");
+        renderTable();
+        alert("All links copied!");
       });
     }
+
     function exportToCSV(){
       let csv="Receipt No.,Sales Type,Generated Link\n";
       currentData.forEach(r=>r.link?csv+=`${r['Receipt No.']},${r['Sales Type']},${r.link}\n`:null);
       const blob=new Blob([csv],{type:'text/csv'});
       const url=URL.createObjectURL(blob);
-      const a=document.createElement('a');a.href=url;a.download="survey_links.csv";a.click();
+      const a=document.createElement('a');
+      a.href=url;a.download="survey_links.csv";a.click();
     }
+
     function generateSurveyLink(row){
       const receipt=row['Receipt No.'], sales=row['Sales Type'];
       let SM='',OI='',OT='';
@@ -132,9 +196,21 @@
       const data={"S":storeID,"OI":OI,"D":D,"TM":TM,"DTM":DTM,"TI":OI,"OT":OT,"SM":SM,"PH":PH};
       return `https://customer.kfc-listens.com/jfe/form/SV_8bHC0noyvM3jPWC?Q_EED=${btoa(JSON.stringify(data))}`;
     }
-    function convertExcelDate(serial){if(!serial||isNaN(serial))return"";const date=new Date((serial-25569)*86400*1000);return`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;}
-    function convertExcelTime(serial){if(!serial||isNaN(serial))return"";const totalMs=Math.round(serial*24*60*60*1000);const h=String(Math.floor(totalMs/(60*60*1000))).padStart(2,'0');const m=String(Math.floor((totalMs%(60*60*1000))/(60*1000))).padStart(2,'0');const s=String(Math.floor((totalMs%(60*1000))/1000)).padStart(2,'0');return`${h}:${m}:${s}`;}
+
+    function convertExcelDate(serial){
+      if(!serial||isNaN(serial))return"";
+      const date=new Date((serial-25569)*86400*1000);
+      return`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+    }
+
+    function convertExcelTime(serial){
+      if(!serial||isNaN(serial))return"";
+      const totalMs=Math.round(serial*24*60*60*1000);
+      const h=String(Math.floor(totalMs/(60*60*1000))).padStart(2,'0');
+      const m=String(Math.floor((totalMs%(60*60*1000))/(60*1000))).padStart(2,'0');
+      const s=String(Math.floor((totalMs%(60*1000))/1000)).padStart(2,'0');
+      return`${h}:${m}:${s}`;
+    }
   </script>
 </body>
 </html>
-
