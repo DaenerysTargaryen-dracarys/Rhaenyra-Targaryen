@@ -7,80 +7,114 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
-      background: linear-gradient(-45deg, #ffbe0b, #fb5607, #ff006e, #8338ec, #3a86ff);
-      background-size: 400% 400%;
-      animation: aurora 12s ease infinite;
+      background: #ffbe0b; /* Static bold comic-style yellow */
       font-family: "Comic Neue", cursive, sans-serif;
     }
-    @keyframes aurora {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
+
+    /* Comic-style container */
     .glass {
-      background: rgba(255,255,255,0.15);
-      border: 2px solid #000;
-      backdrop-filter: blur(12px);
-      border-radius: 20px;
+      background: #fff8dc;
+      border: 4px solid #000;
+      border-radius: 18px;
       box-shadow: 8px 8px 0px #000;
+      padding: 1.5rem;
       transition: 0.3s ease;
     }
-    .glass:hover { transform: translateY(-5px) rotate(-1deg); }
+    .glass:hover {
+      transform: translateY(-4px);
+    }
+
+    /* Comic-style buttons */
     .btn {
-      padding: 0.5rem 1.25rem;
+      padding: 0.6rem 1.5rem;
       border-radius: 0.5rem;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 1px;
+      border: 3px solid #000;
       box-shadow: 4px 4px 0px #000;
-      transition: transform 0.2s, opacity 0.3s;
+      transition: transform 0.2s, background 0.3s;
       font-family: "Bangers", cursive;
     }
     .btn-main {
-      background: linear-gradient(to right,#ff006e,#fb5607);
-      color: white;
-      border: 2px solid #000;
+      background: #ff006e;
+      color: #fff;
     }
-    .btn-main:hover { transform: scale(1.05) rotate(-2deg); }
+    .btn-main:hover {
+      transform: scale(1.05) rotate(-2deg);
+      background: #fb5607;
+    }
     .btn-alt {
-      background: #ffbe0b;
-      color: #000;
-      border: 2px solid #000;
+      background: #3a86ff;
+      color: #fff;
     }
-    .btn-alt:hover { transform: scale(1.05) rotate(2deg); }
+    .btn-alt:hover {
+      transform: scale(1.05) rotate(2deg);
+      background: #8338ec;
+    }
+
+    /* Input focus */
     input:focus {
-      border-color: #ff006e;
-      box-shadow: 0 0 8px rgba(255,0,110,0.7);
+      border: 3px solid #ff006e;
       outline: none;
+      box-shadow: 4px 4px 0px #000;
     }
-    table { width: 100%; border-collapse: collapse; }
+
+    /* Comic-style table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border: 3px solid #000;
+    }
     th, td {
       padding: 10px;
       text-align: center;
       border: 2px solid #000;
+      font-family: "Comic Neue", cursive;
     }
     th {
       background: #ffbe0b;
       color: #000;
       font-family: "Bangers", cursive;
       font-size: 1.1rem;
+      border-bottom: 3px solid #000;
     }
-    tr:hover { background: rgba(255,255,255,0.25); cursor: pointer; transition: 0.3s; }
-    tr.copied { background: #06d6a0; color: #000; font-weight: bold; }
-    #loader { display: none; text-align: center; font-weight: bold; margin-top: 10px; }
+    tr:hover {
+      background: #ffe066;
+      transition: 0.3s;
+    }
+    tr.copied {
+      background: #06d6a0;
+      color: #000;
+      font-weight: bold;
+    }
+
+    /* Loader */
+    #loader {
+      display: none;
+      text-align: center;
+      font-weight: bold;
+      margin-top: 10px;
+      font-family: "Bangers", cursive;
+      font-size: 1.2rem;
+      color: #000;
+    }
   </style>
   <!-- Comic Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 text-white">
-  <div class="glass p-6 w-full max-w-4xl">
+<body class="min-h-screen flex items-center justify-center p-4">
+  <div class="glass w-full max-w-4xl">
     <div class="flex flex-col items-center mb-6">
-      <h2 class="text-4xl font-bold mb-2" style="font-family:'Bangers', cursive;">💥 Survey Link Generator 💥</h2>
-      <p class="text-lg mb-2">(Store Name: Horamavu) (Store Code: K281)</p>
+      <h2 class="text-4xl font-bold mb-2" style="font-family:'Bangers', cursive; color:#000; text-shadow:2px 2px #fff;">
+        💥 Survey Link Generator 💥
+      </h2>
+      <p class="text-lg mb-2 text-black font-bold">(Store Name: Horamavu) (Store Code: K281)</p>
     </div>
-    <div class="glass p-4 mb-6">
-      <h3 class="text-2xl mb-4 font-bold" style="font-family:'Bangers', cursive;">📂 Upload Excel File</h3>
-      <input type="file" id="fileInput" accept=".xlsx, .xls" class="mb-4">
+    <div class="glass mb-6">
+      <h3 class="text-2xl mb-4 font-bold" style="font-family:'Bangers', cursive; color:#000;">📂 Upload Excel File</h3>
+      <input type="file" id="fileInput" accept=".xlsx, .xls" class="mb-4 border-2 border-black p-2 w-full bg-white">
       <div class="flex flex-wrap gap-3">
         <button id="generateBtn" onclick="processFile()" class="btn btn-main" disabled>Generate Links</button>
         <button onclick="clearData()" class="btn btn-alt">Clear All</button>
@@ -89,7 +123,7 @@
       </div>
       <div id="loader">⏳ Generating Links...</div>
     </div>
-    <div class="glass p-4 overflow-x-auto">
+    <div class="glass overflow-x-auto">
       <table id="linkTable">
         <thead>
           <tr>
@@ -98,7 +132,7 @@
             <th>Action</th>
           </tr>
         </thead>
-        <tbody class="text-black bg-white/60"></tbody>
+        <tbody class="text-black"></tbody>
       </table>
     </div>
   </div>
