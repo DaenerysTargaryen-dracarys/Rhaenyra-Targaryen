@@ -3,150 +3,281 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home - Survey Link Generator</title>
+  <title>Survey Link Generator</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
-      background: #ffbe0b; /* Static comic yellow */
-      font-family: "Permanent Marker", cursive;
-      color: #000;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      font-family: 'Segoe UI', system-ui, sans-serif;
       margin: 0;
       padding: 0;
+      min-height: 100vh;
     }
 
-    /* Comic-style container (panel) */
-    .glass {
-      background: #fff8dc;
-      border: 5px solid #000;
+    /* Clean container styling */
+    .clean-panel {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
       border-radius: 12px;
-      box-shadow: 10px 10px 0px #000;
-      padding: 1.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      padding: 2rem;
       margin-bottom: 1.5rem;
+      transition: box-shadow 0.3s;
     }
-    .glass:hover {
-      transform: translateY(-4px);
-      transition: 0.2s ease;
-    }
-
-    /* Comic-style buttons */
-    .btn {
-      padding: 0.6rem 1.5rem;
-      border-radius: 0.5rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      border: 3px solid #000;
-      box-shadow: 4px 4px 0px #000;
-      transition: transform 0.2s, background 0.3s;
-      font-family: "Luckiest Guy", cursive;
-    }
-    .btn-main {
-      background: #ff006e;
-      color: #fff;
-    }
-    .btn-main:hover {
-      transform: scale(1.05) rotate(-2deg);
-      background: #fb5607;
-    }
-    .btn-alt {
-      background: #3a86ff;
-      color: #fff;
-    }
-    .btn-alt:hover {
-      transform: scale(1.05) rotate(2deg);
-      background: #8338ec;
+    
+    .clean-panel:hover {
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.07);
     }
 
-    /* Input */
-    input {
-      font-family: "Permanent Marker", cursive;
+    /* Clean button styling */
+    .clean-btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      border: none;
+      transition: all 0.3s;
+      cursor: pointer;
+      font-size: 0.95rem;
     }
-    input:focus {
-      border: 3px solid #ff006e;
+    
+    .clean-btn:active {
+      transform: translateY(1px);
+    }
+    
+    .clean-btn-main {
+      background: #3b82f6;
+      color: #fff;
+    }
+    .clean-btn-main:hover {
+      background: #2563eb;
+    }
+    .clean-btn-alt {
+      background: #64748b;
+      color: #fff;
+    }
+    .clean-btn-alt:hover {
+      background: #475569;
+    }
+    
+    .clean-btn-success {
+      background: #10b981;
+      color: #fff;
+    }
+    .clean-btn-success:hover {
+      background: #059669;
+    }
+
+    /* Input styling */
+    .clean-input {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 0.75rem;
+      background: white;
+      transition: all 0.3s;
+    }
+    
+    .clean-input:focus {
+      border: 1px solid #3b82f6;
       outline: none;
-      box-shadow: 4px 4px 0px #000;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
 
-    /* Comic-style table */
-    table {
+    /* Clean table styling */
+    .clean-table {
       width: 100%;
       border-collapse: collapse;
       background: #fff;
-      border: 4px solid #000;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
-    th, td {
-      padding: 10px;
+    
+    .clean-table th, .clean-table td {
+      padding: 1rem;
       text-align: center;
-      border: 2px solid #000;
-      font-family: "Permanent Marker", cursive;
+      border-bottom: 1px solid #e2e8f0;
     }
-    th {
-      background: #ffbe0b;
-      color: #000;
-      font-family: "Luckiest Guy", cursive;
-      font-size: 1.2rem;
-      border-bottom: 3px solid #000;
+    
+    .clean-table th {
+      background: #f8fafc;
+      color: #475569;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-    tr:hover {
-      background: #ffe066;
-      transition: 0.3s;
+    
+    .clean-table tr:last-child td {
+      border-bottom: none;
     }
-    tr.copied {
-      background: #06d6a0;
-      color: #000;
-      font-weight: bold;
+    
+    .clean-table tr:hover {
+      background: #f8fafc;
+    }
+    
+    .clean-table tr.copied {
+      background: #d1fae5;
     }
 
-    /* Loader */
+    /* Loader animation */
     #loader {
       display: none;
       text-align: center;
-      font-weight: bold;
+      font-weight: 600;
       margin-top: 10px;
-      font-family: "Luckiest Guy", cursive;
-      font-size: 1.2rem;
-      color: #000;
+      font-size: 1rem;
+      color: #64748b;
+    }
+    
+    /* Progress bar */
+    .progress-container {
+      width: 100%;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 3px;
+      margin: 1rem 0;
+      overflow: hidden;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: #3b82f6;
+      width: 0%;
+      transition: width 0.5s;
+      border-radius: 3px;
+    }
+    
+    /* Header styling */
+    .clean-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .clean-header h1 {
+      font-weight: 700;
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      color: #1e293b;
+    }
+    
+    .clean-header p {
+      font-size: 1.1rem;
+      color: #64748b;
+    }
+    
+    /* Footer styling */
+    .clean-footer {
+      text-align: center;
+      margin-top: 2rem;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #64748b;
+      border-top: 1px solid #e2e8f0;
+    }
+    
+    /* Status message */
+    .status-message {
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      font-weight: 500;
+    }
+    
+    .status-info {
+      background: #dbeafe;
+      color: #1e40af;
+      border-left: 4px solid #3b82f6;
+    }
+    
+    /* File upload area */
+    .file-upload {
+      border: 2px dashed #cbd5e1;
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      margin: 1rem 0;
+      transition: all 0.3s;
+    }
+    
+    .file-upload:hover {
+      border-color: #3b82f6;
+      background: #f8fafc;
+    }
+    
+    .file-upload.dragover {
+      border-color: #3b82f6;
+      background: #eff6ff;
     }
   </style>
-  <!-- Unique Comic Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Permanent+Marker&display=swap" rel="stylesheet">
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
-  <div class="w-full max-w-5xl">
+<body class="min-h-screen p-4">
+  <div class="w-full max-w-6xl mx-auto">
     
-    <!-- Panel 1 -->
-    <div class="glass text-center">
-      <h2 class="text-5xl mb-3" style="font-family:'Luckiest Guy', cursive; text-shadow:3px 3px #fff;">
-        💥 Survey Link Generator 💥
-      </h2>
-      <p class="text-lg font-bold">(Store Name: Horamavu) (Store Code: K281)</p>
+    <!-- Header Panel -->
+    <div class="clean-header">
+      <h1>Survey Link Generator</h1>
+      <p>  Store: Name Horamavu
+         <p> Store Code K281</p>
+         <p> Use this wisely and take full responsibility for your choices.<p>
     </div>
 
-    <!-- Panel 2 -->
-    <div class="glass">
-      <h3 class="text-3xl mb-4" style="font-family:'Luckiest Guy', cursive;">📂 Upload Excel File</h3>
-      <input type="file" id="fileInput" accept=".xlsx, .xls" class="mb-4 border-2 border-black p-2 w-full bg-white">
-      <div class="flex flex-wrap gap-3">
-        <button id="generateBtn" onclick="processFile()" class="btn btn-main" disabled>Generate Links</button>
-        <button onclick="clearData()" class="btn btn-alt">Clear All</button>
-        <button id="copyAllBtn" onclick="copyAllLinks()" disabled class="btn btn-alt">Copy All</button>
-        <button id="exportBtn" onclick="exportToCSV()" disabled class="btn btn-alt">Export CSV</button>
+    <!-- Upload Panel -->
+    <div class="clean-panel">
+      <h3 class="text-2xl font-semibold mb-6 text-gray-800">Upload Excel File</h3>
+      
+      <div class="status-message status-info">
+        Upload your Excel file with receipt data to generate survey links automatically.
       </div>
-      <div id="loader">⏳ Generating Links...</div>
+      
+      <div class="file-upload" id="fileUploadArea">
+        <p class="text-gray-600 mb-2">Drag & drop your Excel file here or click to browse</p>
+        <input type="file" id="fileInput" accept=".xlsx, .xls" class="hidden">
+        <button onclick="document.getElementById('fileInput').click()" class="clean-btn clean-btn-alt mt-2">Select File</button>
+        <p id="fileName" class="text-sm text-gray-500 mt-2"></p>
+      </div>
+      
+      <div class="progress-container">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+      
+      <div class="flex flex-wrap gap-3">
+        <button id="generateBtn" onclick="processFile()" class="clean-btn clean-btn-main" disabled>Generate Links</button>
+        <button onclick="clearData()" class="clean-btn clean-btn-alt">Clear All</button>
+        <button id="copyAllBtn" onclick="copyAllLinks()" disabled class="clean-btn clean-btn-alt">Copy All Links</button>
+        <button id="exportBtn" onclick="exportToCSV()" disabled class="clean-btn clean-btn-alt">Export CSV</button>
+      </div>
+      
+      <div id="loader">Generating links...</div>
     </div>
 
-    <!-- Panel 3 -->
-    <div class="glass overflow-x-auto">
-      <table id="linkTable">
-        <thead>
-          <tr>
-            <th>Receipt No.</th>
-            <th>Sales Type</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody class="text-black"></tbody>
-      </table>
+    <!-- Results Panel -->
+    <div class="clean-panel">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-semibold text-gray-800">Generated Links</h3>
+        <div id="resultsCount" class="text-sm font-medium text-gray-600">
+          0 links generated
+        </div>
+      </div>
+      
+      <div class="overflow-x-auto">
+        <table class="clean-table" id="linkTable">
+          <thead>
+            <tr>
+              <th>Receipt No.</th>
+              <th>Sales Type</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="clean-footer">
+      <p>Survey Link Generator • Desinged By ( MATRIX ) </p>
     </div>
 
   </div>
@@ -157,107 +288,206 @@
     let currentData = [], copiedLinks = new Set(JSON.parse(localStorage.getItem("copiedLinks")||"[]"));
     const storeID = "91KDIPL879-01";
 
-    document.getElementById('fileInput')?.addEventListener('change',()=>{
-      document.getElementById('generateBtn').disabled=false;
+    // File input handling
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        document.getElementById('fileName').textContent = `Selected: ${file.name}`;
+        document.getElementById('generateBtn').disabled = false;
+      }
+    });
+
+    // Drag and drop functionality
+    const fileUploadArea = document.getElementById('fileUploadArea');
+    fileUploadArea.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      fileUploadArea.classList.add('dragover');
+    });
+    
+    fileUploadArea.addEventListener('dragleave', function(e) {
+      e.preventDefault();
+      fileUploadArea.classList.remove('dragover');
+    });
+    
+    fileUploadArea.addEventListener('drop', function(e) {
+      e.preventDefault();
+      fileUploadArea.classList.remove('dragover');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        document.getElementById('fileInput').files = files;
+        document.getElementById('fileName').textContent = `Selected: ${files[0].name}`;
+        document.getElementById('generateBtn').disabled = false;
+      }
     });
 
     function processFile(){
-      const file=document.getElementById('fileInput').files[0];
-      if(!file)return;
-      document.getElementById('loader').style.display='block';
-      const reader=new FileReader();
-      reader.onload=function(e){
-        const data=new Uint8Array(e.target.result);
-        const wb=XLSX.read(data,{type:'array'});
-        const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
-        currentData=rows.map(r=>({...r,link:generateSurveyLink(r)}));
+      const file = document.getElementById('fileInput').files[0];
+      if(!file) return;
+      
+      document.getElementById('loader').style.display = 'block';
+      document.getElementById('progressBar').style.width = '30%';
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('progressBar').style.width = '60%';
+        
+        const data = new Uint8Array(e.target.result);
+        const wb = XLSX.read(data, {type: 'array'});
+        const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+        
+        document.getElementById('progressBar').style.width = '90%';
+        
+        currentData = rows.map(r => ({...r, link: generateSurveyLink(r)}));
         renderTable();
-        document.getElementById('loader').style.display='none';
+        
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('progressBar').style.width = '100%';
+        
+        setTimeout(() => {
+          document.getElementById('progressBar').style.width = '0%';
+        }, 1000);
       };
       reader.readAsArrayBuffer(file);
     }
 
     function renderTable(){
-      const tbody=document.querySelector("#linkTable tbody");tbody.innerHTML='';
-      currentData.forEach(row=>{
+      const tbody = document.querySelector("#linkTable tbody");
+      tbody.innerHTML = '';
+      
+      currentData.forEach(row => {
         if(row.link){
-          const tr=document.createElement('tr');
+          const tr = document.createElement('tr');
           if(copiedLinks.has(row.link)){
             tr.classList.add("copied");
-            tr.innerHTML=`<td>${row['Receipt No.']}</td><td>${row['Sales Type']}</td><td><button disabled class="btn btn-alt">Copied</button></td>`;
-          }else{
-            tr.innerHTML=`<td>${row['Receipt No.']}</td><td>${row['Sales Type']}</td><td><button onclick="copyLink('${row.link}', this)" class="btn btn-main">Copy</button></td>`;
+            tr.innerHTML = `
+              <td class="font-medium">${row['Receipt No.']}</td>
+              <td>${row['Sales Type']}</td>
+              <td><button disabled class="clean-btn clean-btn-success">Copied</button></td>
+            `;
+          } else {
+            tr.innerHTML = `
+              <td class="font-medium">${row['Receipt No.']}</td>
+              <td>${row['Sales Type']}</td>
+              <td><button onclick="copyLink('${row.link}', this)" class="clean-btn clean-btn-main">Copy</button></td>
+            `;
           }
           tbody.appendChild(tr);
         }
       });
-      document.getElementById('copyAllBtn').disabled=false;
-      document.getElementById('exportBtn').disabled=false;
+      
+      document.getElementById('copyAllBtn').disabled = false;
+      document.getElementById('exportBtn').disabled = false;
+      
+      // Update results count
+      const linkCount = currentData.filter(r => r.link).length;
+      document.getElementById('resultsCount').textContent = `${linkCount} links generated`;
     }
 
     function clearData(){
-      currentData=[];
-      document.querySelector("#linkTable tbody").innerHTML='';
-      document.getElementById('copyAllBtn').disabled=true;
-      document.getElementById('exportBtn').disabled=true;
+      currentData = [];
+      document.querySelector("#linkTable tbody").innerHTML = '';
+      document.getElementById('copyAllBtn').disabled = true;
+      document.getElementById('exportBtn').disabled = true;
+      document.getElementById('resultsCount').textContent = '0 links generated';
+      document.getElementById('fileName').textContent = '';
+      document.getElementById('fileInput').value = '';
+      document.getElementById('generateBtn').disabled = true;
     }
 
-    function copyLink(link,btn){
-      navigator.clipboard.writeText(link).then(()=>{
+    function copyLink(link, btn){
+      navigator.clipboard.writeText(link).then(() => {
         copiedLinks.add(link);
-        localStorage.setItem("copiedLinks",JSON.stringify([...copiedLinks]));
-        btn.textContent="Copied";
-        btn.disabled=true;
+        localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks]));
+        btn.textContent = "Copied";
+        btn.classList.remove('clean-btn-main');
+        btn.classList.add('clean-btn-success');
+        btn.disabled = true;
         btn.closest('tr').classList.add('copied');
       });
     }
 
     function copyAllLinks(){
-      if(currentData.length===0)return alert("No links to copy!");
-      const allLinks=currentData.map(r=>r.link).filter(Boolean).join("\n");
-      navigator.clipboard.writeText(allLinks).then(()=>{
-        currentData.forEach(r=>r.link?copiedLinks.add(r.link):null);
-        localStorage.setItem("copiedLinks",JSON.stringify([...copiedLinks]));
+      if(currentData.length === 0) return alert("No links to copy!");
+      const allLinks = currentData.map(r => r.link).filter(Boolean).join("\n");
+      navigator.clipboard.writeText(allLinks).then(() => {
+        currentData.forEach(r => r.link ? copiedLinks.add(r.link) : null);
+        localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks]));
         renderTable();
-        alert("All links copied!");
+        
+        // Show success message
+        const originalText = document.getElementById('copyAllBtn').textContent;
+        document.getElementById('copyAllBtn').textContent = "All Copied!";
+        setTimeout(() => {
+          document.getElementById('copyAllBtn').textContent = originalText;
+        }, 2000);
       });
     }
 
     function exportToCSV(){
-      let csv="Receipt No.,Sales Type,Generated Link\n";
-      currentData.forEach(r=>r.link?csv+=`${r['Receipt No.']},${r['Sales Type']},${r.link}\n`:null);
-      const blob=new Blob([csv],{type:'text/csv'});
-      const url=URL.createObjectURL(blob);
-      const a=document.createElement('a');
-      a.href=url;a.download="survey_links.csv";a.click();
+      let csv = "Receipt No.,Sales Type,Generated Link\n";
+      currentData.forEach(r => r.link ? csv += `${r['Receipt No.']},${r['Sales Type']},${r.link}\n` : null);
+      const blob = new Blob([csv], {type: 'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = "survey_links.csv";
+      a.click();
+      
+      // Show success message
+      const originalText = document.getElementById('exportBtn').textContent;
+      document.getElementById('exportBtn').textContent = "Exported!";
+      setTimeout(() => {
+        document.getElementById('exportBtn').textContent = originalText;
+      }, 2000);
     }
 
     function generateSurveyLink(row){
-      const receipt=row['Receipt No.'], sales=row['Sales Type'];
-      let SM='',OI='',OT='';
-      if(receipt.startsWith('K281') && sales==='TAKEAWAY'){SM='4.0';OI=receipt.slice(-4);OT='2';}
-      else if(receipt.startsWith('K281') && sales==='DINE-IN'){SM='4.0';OI=receipt.slice(-4);OT='1';}
-      else if(receipt.startsWith('K281') && sales==='DELIVERY'){SM='3.0';OI=receipt;OT='3';}
-      else return null;
-      const D=convertExcelDate(row['Date']);const TM=convertExcelTime(row['Time']);
-      const PH=`91${row['Sell-to Contact No.']}`;const DTM=`${D}T${TM}Z`;
-      const data={"S":storeID,"OI":OI,"D":D,"TM":TM,"DTM":DTM,"TI":OI,"OT":OT,"SM":SM,"PH":PH};
+      const receipt = row['Receipt No.'], sales = row['Sales Type'];
+      let SM = '', OI = '', OT = '';
+      
+      if(receipt.startsWith('K281') && sales === 'TAKEAWAY') {
+        SM = '4.0'; OI = receipt.slice(-4); OT = '2';
+      } else if(receipt.startsWith('K281') && sales === 'DINE-IN') {
+        SM = '4.0'; OI = receipt.slice(-4); OT = '1';
+      } else if(receipt.startsWith('K281') && sales === 'DELIVERY') {
+        SM = '3.0'; OI = receipt; OT = '3';
+      } else {
+        return null;
+      }
+      
+      const D = convertExcelDate(row['Date']);
+      const TM = convertExcelTime(row['Time']);
+      const PH = `91${row['Sell-to Contact No.']}`;
+      const DTM = `${D}T${TM}Z`;
+      
+      const data = {
+        "S": storeID,
+        "OI": OI,
+        "D": D,
+        "TM": TM,
+        "DTM": DTM,
+        "TI": OI,
+        "OT": OT,
+        "SM": SM,
+        "PH": PH
+      };
+      
       return `https://customer.kfc-listens.com/jfe/form/SV_8bHC0noyvM3jPWC?Q_EED=${btoa(JSON.stringify(data))}`;
     }
 
     function convertExcelDate(serial){
-      if(!serial||isNaN(serial))return"";
-      const date=new Date((serial-25569)*86400*1000);
-      return`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+      if(!serial || isNaN(serial)) return "";
+      const date = new Date((serial - 25569) * 86400 * 1000);
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     }
 
     function convertExcelTime(serial){
-      if(!serial||isNaN(serial))return"";
-      const totalMs=Math.round(serial*24*60*60*1000);
-      const h=String(Math.floor(totalMs/(60*60*1000))).padStart(2,'0');
-      const m=String(Math.floor((totalMs%(60*60*1000))/(60*1000))).padStart(2,'0');
-      const s=String(Math.floor((totalMs%(60*1000))/1000)).padStart(2,'0');
-      return`${h}:${m}:${s}`;
+      if(!serial || isNaN(serial)) return "";
+      const totalMs = Math.round(serial * 24 * 60 * 60 * 1000);
+      const h = String(Math.floor(totalMs / (60 * 60 * 1000))).padStart(2, '0');
+      const m = String(Math.floor((totalMs % (60 * 60 * 1000)) / (60 * 1000))).padStart(2, '0');
+      const s = String(Math.floor((totalMs % (60 * 1000)) / 1000)).padStart(2, '0');
+      return `${h}:${m}:${s}`;
     }
   </script>
 </body>
