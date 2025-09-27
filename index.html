@@ -5,120 +5,148 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Survey Link Generator</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    :root {
+      --primary: #8b5cf6;
+      --primary-dark: #7c3aed;
+      --secondary: #94a3b8;
+      --success: #10b981;
+      --glass-bg: rgba(255, 255, 255, 0.15);
+      --glass-border: rgba(255, 255, 255, 0.2);
+      --text-dark: #1e293b;
+      --text-light: #64748b;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
     body {
-      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
       margin: 0;
-      padding: 0;
+      padding: 20px;
       min-height: 100vh;
+      line-height: 1.6;
     }
 
-    /* Clean container styling */
-    .clean-panel {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-      padding: 2rem;
+    /* Glassmorphism effect */
+    .glass-panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border-radius: 16px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
       margin-bottom: 1.5rem;
-      transition: box-shadow 0.3s;
+      transition: all 0.3s ease;
     }
     
-    .clean-panel:hover {
-      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.07);
+    .glass-panel:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
     }
 
-    /* Clean button styling */
-    .clean-btn {
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
+    /* Glass button styling */
+    .glass-btn {
+      padding: 0.7rem 1.3rem;
+      border-radius: 10px;
       font-weight: 600;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
       border: none;
-      transition: all 0.3s;
+      transition: all 0.3s ease;
       cursor: pointer;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
     
-    .clean-btn:active {
-      transform: translateY(1px);
+    .glass-btn:active {
+      transform: translateY(2px);
     }
     
-    .clean-btn-main {
-      background: #3b82f6;
-      color: #fff;
+    .glass-btn-primary {
+      background: rgba(139, 92, 246, 0.7);
+      color: white;
+      border: 1px solid rgba(139, 92, 246, 0.3);
     }
-    .clean-btn-main:hover {
-      background: #2563eb;
-    }
-    .clean-btn-alt {
-      background: #64748b;
-      color: #fff;
-    }
-    .clean-btn-alt:hover {
-      background: #475569;
+    .glass-btn-primary:hover {
+      background: rgba(124, 58, 237, 0.8);
+      box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
     }
     
-    .clean-btn-success {
-      background: #10b981;
-      color: #fff;
+    .glass-btn-secondary {
+      background: rgba(148, 163, 184, 0.7);
+      color: white;
+      border: 1px solid rgba(148, 163, 184, 0.3);
     }
-    .clean-btn-success:hover {
-      background: #059669;
+    .glass-btn-secondary:hover {
+      background: rgba(100, 116, 139, 0.8);
+      box-shadow: 0 5px 15px rgba(148, 163, 184, 0.4);
+    }
+    
+    .glass-btn-success {
+      background: rgba(16, 185, 129, 0.7);
+      color: white;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .glass-btn-success:hover {
+      background: rgba(5, 150, 105, 0.8);
+      box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+    }
+    
+    .glass-btn-outline {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .glass-btn-outline:hover {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
     }
 
-    /* Input styling */
-    .clean-input {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      padding: 0.75rem;
-      background: white;
-      transition: all 0.3s;
-    }
-    
-    .clean-input:focus {
-      border: 1px solid #3b82f6;
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-
-    /* Clean table styling */
-    .clean-table {
+    /* Glass table styling */
+    .glass-table {
       width: 100%;
       border-collapse: collapse;
-      background: #fff;
-      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
-    .clean-table th, .clean-table td {
-      padding: 1rem;
+    .glass-table th, .glass-table td {
+      padding: 1rem 0.75rem;
       text-align: center;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      color: white;
     }
     
-    .clean-table th {
-      background: #f8fafc;
-      color: #475569;
+    .glass-table th {
+      background: rgba(255, 255, 255, 0.15);
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
     
-    .clean-table tr:last-child td {
+    .glass-table tr:last-child td {
       border-bottom: none;
     }
     
-    .clean-table tr:hover {
-      background: #f8fafc;
+    .glass-table tr:hover {
+      background: rgba(255, 255, 255, 0.05);
     }
     
-    .clean-table tr.copied {
-      background: #d1fae5;
+    .glass-table tr.copied {
+      background: rgba(16, 185, 129, 0.15);
     }
 
     /* Loader animation */
@@ -128,14 +156,14 @@
       font-weight: 600;
       margin-top: 10px;
       font-size: 1rem;
-      color: #64748b;
+      color: white;
     }
     
     /* Progress bar */
     .progress-container {
       width: 100%;
       height: 6px;
-      background: #e2e8f0;
+      background: rgba(255, 255, 255, 0.2);
       border-radius: 3px;
       margin: 1rem 0;
       overflow: hidden;
@@ -143,321 +171,759 @@
     
     .progress-bar {
       height: 100%;
-      background: #3b82f6;
+      background: linear-gradient(90deg, var(--primary), #a78bfa);
       width: 0%;
-      transition: width 0.5s;
+      transition: width 0.4s ease;
       border-radius: 3px;
     }
     
     /* Header styling */
-    .clean-header {
+    .glass-header {
       text-align: center;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
+      padding: 1.5rem 0;
     }
     
-    .clean-header h1 {
+    .glass-header h1 {
       font-weight: 700;
       font-size: 2.5rem;
       margin-bottom: 0.5rem;
-      color: #1e293b;
+      color: white;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     }
     
-    .clean-header p {
+    .glass-header p {
       font-size: 1.1rem;
-      color: #64748b;
+      color: rgba(255, 255, 255, 0.8);
+      max-width: 600px;
+      margin: 0 auto;
     }
     
     /* Footer styling */
-    .clean-footer {
+    .glass-footer {
       text-align: center;
       margin-top: 2rem;
-      padding: 1rem;
-      font-size: 0.9rem;
-      color: #64748b;
-      border-top: 1px solid #e2e8f0;
+      padding: 1.5rem;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.7);
     }
     
     /* Status message */
     .status-message {
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
+      padding: 0.9rem 1rem;
+      border-radius: 10px;
       margin: 1rem 0;
       font-weight: 500;
-    }
-    
-    .status-info {
-      background: #dbeafe;
-      color: #1e40af;
-      border-left: 4px solid #3b82f6;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      border-left: 4px solid rgba(255, 255, 255, 0.5);
     }
     
     /* File upload area */
     .file-upload {
-      border: 2px dashed #cbd5e1;
-      border-radius: 8px;
+      border: 2px dashed rgba(255, 255, 255, 0.4);
+      border-radius: 12px;
       padding: 2rem;
       text-align: center;
       margin: 1rem 0;
       transition: all 0.3s;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
     
     .file-upload:hover {
-      border-color: #3b82f6;
-      background: #f8fafc;
+      border-color: rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.15);
     }
     
     .file-upload.dragover {
-      border-color: #3b82f6;
-      background: #eff6ff;
+      border-color: var(--primary);
+      background: rgba(139, 92, 246, 0.2);
+    }
+    
+    .file-upload-icon {
+      font-size: 2.5rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 0.75rem;
+    }
+    
+    /* Stats cards */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .stat-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 1.25rem;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.3s;
+      color: white;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-3px);
+      background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    
+    .stat-label {
+      font-size: 0.8rem;
+      opacity: 0.8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+      
+      .glass-panel {
+        padding: 1.25rem;
+      }
+      
+      .glass-table {
+        font-size: 0.85rem;
+      }
+      
+      .glass-table th, .glass-table td {
+        padding: 0.75rem 0.5rem;
+      }
+      
+      .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .glass-header h1 {
+        font-size: 2rem;
+      }
+    }
+    
+    /* Animation for copied state */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+    
+    .copied-animation {
+      animation: pulse 0.3s ease;
+    }
+    
+    /* Badge for store info */
+    .store-badge {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 0.4rem 0.8rem;
+      margin: 0.2rem;
+      font-size: 0.85rem;
+      color: white;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    
+    /* Tooltip */
+    .tooltip {
+      position: relative;
+    }
+    
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 160px;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 6px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -80px;
+      opacity: 0;
+      transition: opacity 0.2s;
+      font-size: 0.75rem;
+      font-weight: normal;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+    
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      color: white;
+      font-weight: 500;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      transform: translateX(120%);
+      transition: transform 0.3s ease;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .notification.show {
+      transform: translateX(0);
+    }
+    
+    .notification.success {
+      background: rgba(16, 185, 129, 0.7);
+    }
+    
+    .notification.warning {
+      background: rgba(245, 158, 11, 0.7);
+    }
+    
+    .notification.info {
+      background: rgba(59, 130, 246, 0.7);
+    }
+    
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+    
+    /* Button group */
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    
+    /* Sales type badges */
+    .sales-badge {
+      padding: 0.3rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    
+    .sales-dinein {
+      background: rgba(59, 130, 246, 0.3);
+      color: white;
+    }
+    
+    .sales-takeaway {
+      background: rgba(16, 185, 129, 0.3);
+      color: white;
+    }
+    
+    .sales-delivery {
+      background: rgba(139, 92, 246, 0.3);
+      color: white;
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);
     }
   </style>
 </head>
-<body class="min-h-screen p-4">
+<body class="min-h-screen">
   <div class="w-full max-w-6xl mx-auto">
     
-    <!-- Header Panel -->
-    <div class="status-message status-info">
-               <h1>Survey Link Generator</h1>
-      <p>  Store: Name Horamavu
-         <p> Store Code K281</p>
-         <p> Use this wisely and take full responsibility for your choices.<p>
+    <!-- Header -->
+    <div class="glass-header">
+      <h1>Survey Link Generator</h1>
+      <p>Transform Excel receipt data into survey links with a single click</p>
+      
+      <div class="flex flex-wrap justify-center mt-3">
+        <div class="store-badge">
+          <i class="fas fa-store mr-1"></i> Store: Name Horamavu
+        </div>
+        <div class="store-badge">
+          <i class="fas fa-code mr-1"></i> Store Code: K281
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-value" id="totalReceipts">0</div>
+        <div class="stat-label">Total Receipts</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="linksGenerated">0</div>
+        <div class="stat-label">Links Generated</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="linksCopied">0</div>
+        <div class="stat-label">Links Copied</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="successRate">0%</div>
+        <div class="stat-label">Success Rate</div>
+      </div>
     </div>
 
     <!-- Upload Panel -->
-    <div class="clean-panel">
-      <h3 class="text-2xl font-semibold mb-6 text-gray-800">Upload Excel File</h3>
+    <div class="glass-panel">
+      <h3 class="text-xl font-semibold mb-2 text-white flex items-center gap-2">
+        <i class="fas fa-file-import"></i> Upload Excel File
+      </h3>
+      <p class="text-white opacity-80 mb-4">Upload your Excel file with receipt data to generate survey links automatically.</p>
       
-      <div class="status-message status-info">
-        Upload your Excel file with receipt data to generate survey links automatically.
+      <div class="status-message">
+        <i class="fas fa-info-circle"></i>
+        <div>
+          <strong>File Requirements:</strong> Excel files (.xlsx, .xls) with columns for Receipt No., Sales Type, Date, Time, and Sell-to Contact No.
+        </div>
       </div>
       
       <div class="file-upload" id="fileUploadArea">
-        <p class="text-gray-600 mb-2">Drag & drop your Excel file here or click to browse</p>
+        <div class="file-upload-icon">
+          <i class="fas fa-cloud-upload-alt"></i>
+        </div>
+        <p class="text-white font-medium mb-2">Drag & drop your Excel file here</p>
+        <p class="text-sm text-white opacity-70 mb-3">or click the button below to browse files</p>
         <input type="file" id="fileInput" accept=".xlsx, .xls" class="hidden">
-        <button onclick="document.getElementById('fileInput').click()" class="clean-btn clean-btn-alt mt-2">Select File</button>
-        <p id="fileName" class="text-sm text-gray-500 mt-2"></p>
+        <button onclick="document.getElementById('fileInput').click()" class="glass-btn glass-btn-outline">
+          <i class="fas fa-folder-open"></i> Select File
+        </button>
+        <p id="fileName" class="text-sm text-white opacity-80 mt-2 font-medium"></p>
       </div>
       
       <div class="progress-container">
         <div id="progressBar" class="progress-bar"></div>
       </div>
       
-      <div class="flex flex-wrap gap-3">
-        <button id="generateBtn" onclick="processFile()" class="clean-btn clean-btn-main" disabled>Generate Links</button>
-        <button onclick="clearData()" class="clean-btn clean-btn-alt">Clear All</button>
-        <button id="copyAllBtn" onclick="copyAllLinks()" disabled class="clean-btn clean-btn-alt">Copy All Links</button>
-        <button id="exportBtn" onclick="exportToCSV()" disabled class="clean-btn clean-btn-alt">Export CSV</button>
+      <div class="button-group">
+        <button id="generateBtn" onclick="processFile()" class="glass-btn glass-btn-primary" disabled>
+          <i class="fas fa-bolt"></i> Generate Links
+        </button>
+        <button onclick="clearData()" class="glass-btn glass-btn-secondary">
+          <i class="fas fa-trash-alt"></i> Clear All
+        </button>
+        <button id="copyAllBtn" onclick="copyAllLinks()" disabled class="glass-btn glass-btn-secondary">
+          <i class="fas fa-copy"></i> Copy All
+        </button>
+        <button id="exportBtn" onclick="exportToCSV()" disabled class="glass-btn glass-btn-secondary">
+          <i class="fas fa-file-export"></i> Export CSV
+        </button>
       </div>
       
-      <div id="loader">Generating links...</div>
+      <div id="loader" class="flex items-center justify-center gap-2 mt-3 text-white">
+        <i class="fas fa-spinner fa-spin"></i> Generating links...
+      </div>
     </div>
 
     <!-- Results Panel -->
-    <div class="clean-panel">
-      <div class="flex justify-between items-center mb-6">
-        <h3 class="text-2xl font-semibold text-gray-800">Generated Links</h3>
-        <div id="resultsCount" class="text-sm font-medium text-gray-600">
-          0 links generated
+    <div class="glass-panel">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-semibold text-white flex items-center gap-2">
+          <i class="fas fa-link"></i> Generated Links
+        </h3>
+        <div id="resultsCount" class="text-sm font-medium text-white bg-white bg-opacity-20 px-2 py-1 rounded-full">
+          <i class="fas fa-hashtag mr-1"></i> <span>0</span> links
         </div>
       </div>
       
-      <div class="overflow-x-auto">
-        <table class="clean-table" id="linkTable">
+      <div class="overflow-x-auto rounded-xl">
+        <table class="glass-table" id="linkTable">
           <thead>
             <tr>
               <th>Receipt No.</th>
               <th>Sales Type</th>
+              <th>Date</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
       </div>
+      
+      <div class="empty-state" id="emptyState">
+        <i class="fas fa-inbox"></i>
+        <p>No links generated yet. Upload an Excel file to get started.</p>
+      </div>
     </div>
     
-    <!-- Footer -->
-    <div class="clean-footer">
-      <p>Survey Link Generator • Desinged By ( MATRIX ) </p>
+    <!-- Header -->
+    <div class="glass-footer">
+      <p>Survey Link Generator • Designed By <span class="font-semibold">MATRIX</span></p>
     </div>
 
   </div>
 
+  <!-- Notification Container -->
+  <div id="notificationContainer"></div>
+
   <!-- XLSX Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script>
-    let currentData = [], copiedLinks = new Set(JSON.parse(localStorage.getItem("copiedLinks")||"[]"));
+    // Data storage
+    let currentData = [];
+    let copiedLinks = new Set(JSON.parse(localStorage.getItem("copiedLinks") || "[]"));
     const storeID = "91KDIPL879-01";
 
-    // File input handling
-    document.getElementById('fileInput').addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (file) {
-        document.getElementById('fileName').textContent = `Selected: ${file.name}`;
-        document.getElementById('generateBtn').disabled = false;
-      }
-    });
+    // Initialize event listeners after DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      // File input handling
+      document.getElementById('fileInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          document.getElementById('fileName').textContent = `Selected: ${file.name}`;
+          document.getElementById('generateBtn').disabled = false;
+          updateStats();
+        }
+      });
 
-    // Drag and drop functionality
-    const fileUploadArea = document.getElementById('fileUploadArea');
-    fileUploadArea.addEventListener('dragover', function(e) {
-      e.preventDefault();
-      fileUploadArea.classList.add('dragover');
-    });
-    
-    fileUploadArea.addEventListener('dragleave', function(e) {
-      e.preventDefault();
-      fileUploadArea.classList.remove('dragover');
-    });
-    
-    fileUploadArea.addEventListener('drop', function(e) {
-      e.preventDefault();
-      fileUploadArea.classList.remove('dragover');
-      const files = e.dataTransfer.files;
-      if (files.length > 0) {
-        document.getElementById('fileInput').files = files;
-        document.getElementById('fileName').textContent = `Selected: ${files[0].name}`;
-        document.getElementById('generateBtn').disabled = false;
-      }
-    });
-
-    function processFile(){
-      const file = document.getElementById('fileInput').files[0];
-      if(!file) return;
+      // Drag and drop functionality
+      const fileUploadArea = document.getElementById('fileUploadArea');
+      fileUploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        fileUploadArea.classList.add('dragover');
+      });
       
-      document.getElementById('loader').style.display = 'block';
+      fileUploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        fileUploadArea.classList.remove('dragover');
+      });
+      
+      fileUploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        fileUploadArea.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          document.getElementById('fileInput').files = files;
+          document.getElementById('fileName').textContent = `Selected: ${files[0].name}`;
+          document.getElementById('generateBtn').disabled = false;
+          updateStats();
+        }
+      });
+
+      updateStats();
+    });
+
+    // Process file function
+    function processFile() {
+      const file = document.getElementById('fileInput').files[0];
+      if (!file) return;
+      
+      document.getElementById('loader').style.display = 'flex';
       document.getElementById('progressBar').style.width = '30%';
       
       const reader = new FileReader();
       reader.onload = function(e) {
-        document.getElementById('progressBar').style.width = '60%';
-        
-        const data = new Uint8Array(e.target.result);
-        const wb = XLSX.read(data, {type: 'array'});
-        const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
-        
-        document.getElementById('progressBar').style.width = '90%';
-        
-        currentData = rows.map(r => ({...r, link: generateSurveyLink(r)}));
-        renderTable();
-        
-        document.getElementById('loader').style.display = 'none';
-        document.getElementById('progressBar').style.width = '100%';
-        
         setTimeout(() => {
-          document.getElementById('progressBar').style.width = '0%';
-        }, 1000);
+          document.getElementById('progressBar').style.width = '60%';
+          
+          try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, {type: 'array'});
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            const rows = XLSX.utils.sheet_to_json(worksheet);
+            
+            document.getElementById('progressBar').style.width = '90%';
+            
+            // Process data
+            processData(rows);
+          } catch (error) {
+            console.error('Error processing file:', error);
+            showNotification('Error processing file. Please check the file format.', 'warning');
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('progressBar').style.width = '0%';
+          }
+        }, 10);
       };
       reader.readAsArrayBuffer(file);
     }
 
-    function renderTable(){
+    // Process data
+    function processData(rows) {
+      currentData = rows.map(row => ({
+        ...row,
+        link: generateSurveyLink(row)
+      }));
+      
+      document.getElementById('progressBar').style.width = '100%';
+      renderTable();
+      
+      setTimeout(() => {
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('progressBar').style.width = '0%';
+      }, 500);
+    }
+
+    // Render table
+    function renderTable() {
       const tbody = document.querySelector("#linkTable tbody");
+      const emptyState = document.getElementById('emptyState');
+      
+      if (currentData.length === 0) {
+        tbody.innerHTML = '';
+        emptyState.style.display = 'block';
+        updateButtonStates();
+        updateStats();
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      
+      // Clear existing rows
       tbody.innerHTML = '';
       
-      currentData.forEach(row => {
-        if(row.link){
+      let linkCount = 0;
+      
+      currentData.forEach((row, index) => {
+        if (row.link) {
+          linkCount++;
           const tr = document.createElement('tr');
-          if(copiedLinks.has(row.link)){
+          const date = row['Date'] ? convertExcelDate(row['Date']) : 'N/A';
+          const salesTypeClass = getSalesTypeClass(row['Sales Type']);
+          
+          if (copiedLinks.has(row.link)) {
             tr.classList.add("copied");
             tr.innerHTML = `
-              <td class="font-medium">${row['Receipt No.']}</td>
-              <td>${row['Sales Type']}</td>
-              <td><button disabled class="clean-btn clean-btn-success">Copied</button></td>
+              <td class="font-medium">${escapeHtml(row['Receipt No.'] || 'N/A')}</td>
+              <td><span class="sales-badge ${salesTypeClass}">${escapeHtml(row['Sales Type'] || 'N/A')}</span></td>
+              <td>${escapeHtml(date)}</td>
+              <td><button disabled class="glass-btn glass-btn-success"><i class="fas fa-check"></i> Copied</button></td>
             `;
           } else {
             tr.innerHTML = `
-              <td class="font-medium">${row['Receipt No.']}</td>
-              <td>${row['Sales Type']}</td>
-              <td><button onclick="copyLink('${row.link}', this)" class="clean-btn clean-btn-main">Copy</button></td>
+              <td class="font-medium">${escapeHtml(row['Receipt No.'] || 'N/A')}</td>
+              <td><span class="sales-badge ${salesTypeClass}">${escapeHtml(row['Sales Type'] || 'N/A')}</span></td>
+              <td>${escapeHtml(date)}</td>
+              <td>
+                <button onclick="copyLink(${index})" class="glass-btn glass-btn-primary tooltip">
+                  <i class="fas fa-copy"></i> Copy
+                  <span class="tooltiptext">Click to copy survey link</span>
+                </button>
+              </td>
             `;
           }
           tbody.appendChild(tr);
         }
       });
       
-      document.getElementById('copyAllBtn').disabled = false;
-      document.getElementById('exportBtn').disabled = false;
-      
       // Update results count
-      const linkCount = currentData.filter(r => r.link).length;
-      document.getElementById('resultsCount').textContent = `${linkCount} links generated`;
+      document.getElementById('resultsCount').innerHTML = `<i class="fas fa-hashtag mr-1"></i> <span>${linkCount}</span> links`;
+      
+      updateButtonStates();
+      updateStats();
     }
 
-    function clearData(){
+    function getSalesTypeClass(salesType) {
+      switch(salesType) {
+        case 'DINE-IN': return 'sales-dinein';
+        case 'TAKEAWAY': return 'sales-takeaway';
+        case 'DELIVERY': return 'sales-delivery';
+        default: return '';
+      }
+    }
+
+    function clearData() {
       currentData = [];
       document.querySelector("#linkTable tbody").innerHTML = '';
-      document.getElementById('copyAllBtn').disabled = true;
-      document.getElementById('exportBtn').disabled = true;
-      document.getElementById('resultsCount').textContent = '0 links generated';
       document.getElementById('fileName').textContent = '';
       document.getElementById('fileInput').value = '';
       document.getElementById('generateBtn').disabled = true;
+      document.getElementById('emptyState').style.display = 'block';
+      updateButtonStates();
+      updateStats();
     }
 
-    function copyLink(link, btn){
-      navigator.clipboard.writeText(link).then(() => {
-        copiedLinks.add(link);
-        localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks]));
-        btn.textContent = "Copied";
-        btn.classList.remove('clean-btn-main');
-        btn.classList.add('clean-btn-success');
-        btn.disabled = true;
-        btn.closest('tr').classList.add('copied');
-      });
+    function updateButtonStates() {
+      const hasData = currentData.length > 0;
+      document.getElementById('copyAllBtn').disabled = !hasData;
+      document.getElementById('exportBtn').disabled = !hasData;
     }
 
-    function copyAllLinks(){
-      if(currentData.length === 0) return alert("No links to copy!");
+    // Copy link function
+    function copyLink(index) {
+      const row = currentData[index];
+      if (!row || !row.link) return;
+      
+      const btn = event.target.closest('button');
+      
+      // Use modern clipboard API with fallback
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(row.link).then(() => {
+          handleCopySuccess(row.link, btn);
+        }).catch(err => {
+          // Fallback for older browsers
+          useFallbackCopyMethod(row.link, btn);
+        });
+      } else {
+        // Fallback for older browsers
+        useFallbackCopyMethod(row.link, btn);
+      }
+    }
+
+    function useFallbackCopyMethod(link, btn) {
+      const textArea = document.createElement('textarea');
+      textArea.value = link;
+      textArea.style.position = 'fixed';
+      textArea.style.opacity = '0';
+      document.body.appendChild(textArea);
+      textArea.select();
+      
+      try {
+        document.execCommand('copy');
+        handleCopySuccess(link, btn);
+      } catch (err) {
+        showNotification('Failed to copy link. Please try again.', 'warning');
+      }
+      
+      document.body.removeChild(textArea);
+    }
+
+    function handleCopySuccess(link, btn) {
+      copiedLinks.add(link);
+      localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks]));
+      
+      // Update button
+      btn.innerHTML = '<i class="fas fa-check"></i> Copied';
+      btn.classList.remove('glass-btn-primary');
+      btn.classList.add('glass-btn-success');
+      btn.disabled = true;
+      
+      // Add animation to row
+      const tr = btn.closest('tr');
+      tr.classList.add('copied', 'copied-animation');
+      
+      // Update stats
+      updateStats();
+      
+      // Reset animation class after animation completes
+      setTimeout(() => {
+        tr.classList.remove('copied-animation');
+      }, 300);
+      
+      showNotification('Link copied to clipboard!', 'success');
+    }
+
+    function copyAllLinks() {
+      if (currentData.length === 0) {
+        showNotification("No links to copy!", "warning");
+        return;
+      }
+      
       const allLinks = currentData.map(r => r.link).filter(Boolean).join("\n");
-      navigator.clipboard.writeText(allLinks).then(() => {
-        currentData.forEach(r => r.link ? copiedLinks.add(r.link) : null);
-        localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks]));
-        renderTable();
-        
-        // Show success message
-        const originalText = document.getElementById('copyAllBtn').textContent;
-        document.getElementById('copyAllBtn').textContent = "All Copied!";
-        setTimeout(() => {
-          document.getElementById('copyAllBtn').textContent = originalText;
-        }, 2000);
-      });
+      
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(allLinks).then(() => {
+          handleCopyAllSuccess();
+        }).catch(err => {
+          useFallbackCopyMethod(allLinks);
+          handleCopyAllSuccess();
+        });
+      } else {
+        useFallbackCopyMethod(allLinks);
+        handleCopyAllSuccess();
+      }
     }
 
-    function exportToCSV(){
-      let csv = "Receipt No.,Sales Type,Generated Link\n";
-      currentData.forEach(r => r.link ? csv += `${r['Receipt No.']},${r['Sales Type']},${r.link}\n` : null);
+    function handleCopyAllSuccess() {
+      currentData.forEach(r => r.link ? copiedLinks.add(r.link) : null);
+      localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks]));
+      renderTable();
+      showNotification("All links copied to clipboard!", "success");
+    }
+
+    function exportToCSV() {
+      if (currentData.length === 0) {
+        showNotification("No data to export!", "warning");
+        return;
+      }
+      
+      let csv = "Receipt No.,Sales Type,Date,Generated Link\n";
+      currentData.forEach(r => {
+        if (r.link) {
+          const date = r['Date'] ? convertExcelDate(r['Date']) : 'N/A';
+          csv += `"${r['Receipt No.'] || 'N/A'}","${r['Sales Type'] || 'N/A'}","${date}","${r.link}"\n`;
+        }
+      });
+      
       const blob = new Blob([csv], {type: 'text/csv'});
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = "survey_links.csv";
       a.click();
+      URL.revokeObjectURL(url);
       
-      // Show success message
-      const originalText = document.getElementById('exportBtn').textContent;
-      document.getElementById('exportBtn').textContent = "Exported!";
-      setTimeout(() => {
-        document.getElementById('exportBtn').textContent = originalText;
-      }, 2000);
+      showNotification(" file exported successfully!", "success");
     }
 
-    function generateSurveyLink(row){
+    function generateSurveyLink(row) {
       const receipt = row['Receipt No.'], sales = row['Sales Type'];
       let SM = '', OI = '', OT = '';
       
-      if(receipt.startsWith('K281') && sales === 'TAKEAWAY') {
-        SM = '4.0'; OI = receipt.slice(-4); OT = '2';
-      } else if(receipt.startsWith('K281') && sales === 'DINE-IN') {
-        SM = '4.0'; OI = receipt.slice(-4); OT = '1';
-      } else if(receipt.startsWith('K281') && sales === 'DELIVERY') {
-        SM = '3.0'; OI = receipt; OT = '3';
+      if (receipt && receipt.startsWith('K281')) {
+        if (sales === 'TAKEAWAY') {
+          SM = '4.0'; OI = receipt.slice(-4); OT = '2';
+        } else if (sales === 'DINE-IN') {
+          SM = '4.0'; OI = receipt.slice(-4); OT = '1';
+        } else if (sales === 'DELIVERY') {
+          SM = '3.0'; OI = receipt; OT = '3';
+        } else {
+          return null;
+        }
       } else {
         return null;
       }
       
       const D = convertExcelDate(row['Date']);
       const TM = convertExcelTime(row['Time']);
-      const PH = `91${row['Sell-to Contact No.']}`;
+      const PH = row['Sell-to Contact No.'] ? `91${row['Sell-to Contact No.']}` : '';
       const DTM = `${D}T${TM}Z`;
       
       const data = {
@@ -475,22 +941,68 @@
       return `https://customer.kfc-listens.com/jfe/form/SV_8bHC0noyvM3jPWC?Q_EED=${btoa(JSON.stringify(data))}`;
     }
 
-    function convertExcelDate(serial){
-      if(!serial || isNaN(serial)) return "";
+    function convertExcelDate(serial) {
+      if (!serial || isNaN(serial)) return "N/A";
       const date = new Date((serial - 25569) * 86400 * 1000);
       return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     }
 
-    function convertExcelTime(serial){
-      if(!serial || isNaN(serial)) return "";
+    function convertExcelTime(serial) {
+      if (!serial || isNaN(serial)) return "00:00:00";
       const totalMs = Math.round(serial * 24 * 60 * 60 * 1000);
       const h = String(Math.floor(totalMs / (60 * 60 * 1000))).padStart(2, '0');
       const m = String(Math.floor((totalMs % (60 * 60 * 1000)) / (60 * 1000))).padStart(2, '0');
       const s = String(Math.floor((totalMs % (60 * 1000)) / 1000)).padStart(2, '0');
       return `${h}:${m}:${s}`;
     }
+
+    function updateStats() {
+      const totalReceipts = currentData.length;
+      const linksGenerated = currentData.filter(r => r.link).length;
+      const linksCopied = copiedLinks.size;
+      const successRate = totalReceipts > 0 ? Math.round((linksGenerated / totalReceipts) * 100) : 0;
+      
+      document.getElementById('totalReceipts').textContent = totalReceipts;
+      document.getElementById('linksGenerated').textContent = linksGenerated;
+      document.getElementById('linksCopied').textContent = linksCopied;
+      document.getElementById('successRate').textContent = `${successRate}%`;
+    }
+
+    function showNotification(message, type) {
+      const container = document.getElementById('notificationContainer');
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.textContent = message;
+      
+      container.appendChild(notification);
+      
+      // Show notification
+      setTimeout(() => {
+        notification.classList.add('show');
+      }, 10);
+      
+      // Hide after 3 seconds
+      setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+          if (container.contains(notification)) {
+            container.removeChild(notification);
+          }
+        }, 300);
+      }, 3000);
+    }
+
+    // Utility function to escape HTML
+    function escapeHtml(unsafe) {
+      if (unsafe === undefined || unsafe === null) return '';
+      return unsafe
+        .toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
   </script>
 </body>
 </html>
-
-
