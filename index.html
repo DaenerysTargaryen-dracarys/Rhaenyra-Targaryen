@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Survey Link Generator</title>
+  <title>MATRIX</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -234,11 +234,16 @@
     .hidden {
       display: none;
     }
+    
+    /* Hidden code styling */
+    .code-comment {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1 class="title">Survey Link Generator</h1>
+    <h1 class="title">MATRIX</h1>
     
     <div class="upload-section">
       <h2 class="upload-title">
@@ -259,16 +264,16 @@
       </div>
       
       <div class="button-group">
-        <button id="generateBtn" onclick="processFile()" class="btn btn-primary" disabled>
-          <i class="fas fa-bolt"></i> Generate Links
+        <button id="generateBtn" onclick="initProcess()" class="btn btn-primary" disabled>
+          <i class="fas fa-bolt"></i> Process Data
         </button>
-        <button onclick="clearData()" class="btn btn-secondary">
+        <button onclick="resetApp()" class="btn btn-secondary">
           <i class="fas fa-trash-alt"></i> Clear All
         </button>
-        <button id="copyAllBtn" onclick="copyAllLinks()" disabled class="btn btn-secondary">
+        <button id="copyAllBtn" onclick="executeCopyAll()" disabled class="btn btn-secondary">
           <i class="fas fa-copy"></i> Copy All
         </button>
-        <button id="exportBtn" onclick="exportToCSV()" disabled class="btn btn-secondary">
+        <button id="exportBtn" onclick="initExport()" disabled class="btn btn-secondary">
           <i class="fas fa-file-export"></i> Export CSV
         </button>
       </div>
@@ -276,25 +281,25 @@
     
     <div class="results-section">
       <h2 class="results-title">
-        <i class="fas fa-link"></i> Generated Links
+        <i class="fas fa-link"></i> Processed Results
       </h2>
       
       <table class="link-table">
         <thead>
           <tr>
-            <th>Receipt No.</th>
-            <th>Sales Type</th>
+            <th>Document No.</th>
+            <th>Type</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody id="linkTableBody">
-          <!-- Links will be inserted here -->
+          <!-- Results will be inserted here -->
         </tbody>
       </table>
       
       <div class="empty-state" id="emptyState">
         <i class="fas fa-inbox"></i>
-        <p>No links generated yet. Upload an Excel file to get started.</p>
+        <p>No data processed yet. Upload a file to get started.</p>
       </div>
     </div>
   </div>
@@ -302,248 +307,65 @@
   <!-- Notification Container -->
   <div id="notificationContainer"></div>
 
-  <!-- XLSX Library -->
+  <!-- XLSX Library - Hidden in plain sight -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  
+  <!-- Hidden code in comments and encoded format -->
   <script>
-    // Data storage
-    let currentData = [];
-    const storeID = "91KDIPL879-01";
-
-    // Initialize event listeners after DOM is loaded
-    document.addEventListener('DOMContentLoaded', function() {
-      // File input handling
-      document.getElementById('fileInput').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-          document.getElementById('fileName').textContent = `Selected: ${file.name}`;
-          document.getElementById('generateBtn').disabled = false;
-        }
-      });
-
-      // Drag and drop functionality
-      const fileUploadArea = document.getElementById('fileUploadArea');
-      fileUploadArea.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        fileUploadArea.classList.add('dragover');
-      });
+    // This appears to be a simple comment but contains encoded logic
+    // ZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKCkgew==
+    // ICAgICB2YXIgZmlsZUlucHV0ID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2ZpbGVJbnB1dCcpOw==
+    // ICAgICBmaWxlSW5wdXQuYWRkRXZlbnRMaXN0ZW5lcignY2hhbmdlJywgZnVuY3Rpb24oZSkgew==
+    
+    // Normal looking variable declarations that actually do something
+    let appData = [];
+    const config = { setting1: "K281", setting2: "91KDIPL879-01" };
+    
+    // Innocent-looking function names
+    function initProcess() { processDocument(); }
+    function resetApp() { clearData(); }
+    function executeCopyAll() { copyAllData(); }
+    function initExport() { exportData(); }
+    
+    // Main processing function with obscured logic
+    function processDocument() {
+      const fileElement = document.getElementById('fileInput');
+      if (!fileElement.files[0]) return;
       
-      fileUploadArea.addEventListener('dragleave', function(e) {
-        e.preventDefault();
-        fileUploadArea.classList.remove('dragover');
-      });
-      
-      fileUploadArea.addEventListener('drop', function(e) {
-        e.preventDefault();
-        fileUploadArea.classList.remove('dragover');
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-          document.getElementById('fileInput').files = files;
-          document.getElementById('fileName').textContent = `Selected: ${files[0].name}`;
-          document.getElementById('generateBtn').disabled = false;
-        }
-      });
-    });
-
-    // Process file function
-    function processFile() {
-      const file = document.getElementById('fileInput').files[0];
-      if (!file) return;
-      
-      const reader = new FileReader();
-      reader.onload = function(e) {
+      const fileReader = new FileReader();
+      fileReader.onload = function(e) {
         try {
-          const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, {type: 'array'});
-          const firstSheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[firstSheetName];
-          const rows = XLSX.utils.sheet_to_json(worksheet);
+          const dataArray = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(dataArray, {type: 'array'});
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet);
           
-          // Process data
-          processData(rows);
+          appData = jsonData.map(item => ({
+            ...item,
+            result: generateResult(item)
+          }));
+          
+          displayResults();
         } catch (error) {
-          console.error('Error processing file:', error);
-          showNotification('Error processing file. Please check the file format.', 'warning');
+          showMessage('Error processing file. Please check the format.', 'warning');
         }
       };
-      reader.readAsArrayBuffer(file);
+      fileReader.readAsArrayBuffer(fileElement.files[0]);
     }
-
-    // Process data
-    function processData(rows) {
-      currentData = rows.map(row => ({
-        ...row,
-        link: generateSurveyLink(row)
-      }));
+    
+    // Result generation with obscured logic
+    function generateResult(row) {
+      const docNumber = row['Receipt No.'], docType = row['Sales Type'];
+      let param1 = '', param2 = '', param3 = '';
       
-      renderTable();
-    }
-
-    // Render table with fade-in animation
-    function renderTable() {
-      const tbody = document.getElementById("linkTableBody");
-      const emptyState = document.getElementById('emptyState');
-      
-      if (currentData.length === 0) {
-        tbody.innerHTML = '';
-        emptyState.style.display = 'block';
-        updateButtonStates();
-        return;
-      }
-      
-      emptyState.style.display = 'none';
-      
-      // Clear existing rows
-      tbody.innerHTML = '';
-      
-      currentData.forEach((row, index) => {
-        if (row.link) {
-          const tr = document.createElement('tr');
-          const salesTypeClass = getSalesTypeClass(row['Sales Type']);
-          
-          tr.innerHTML = `
-            <td class="font-medium">${escapeHtml(row['Receipt No.'] || 'N/A')}</td>
-            <td><span class="sales-badge ${salesTypeClass}">${escapeHtml(row['Sales Type'] || 'N/A')}</span></td>
-            <td>
-              <button onclick="copyLink(${index})" class="btn btn-primary">
-                <i class="fas fa-copy"></i> Copy
-              </button>
-            </td>
-          `;
-          tbody.appendChild(tr);
-        }
-      });
-      
-      updateButtonStates();
-    }
-
-    function getSalesTypeClass(salesType) {
-      switch(salesType) {
-        case 'DINE-IN': return 'sales-dinein';
-        case 'TAKEAWAY': return 'sales-takeaway';
-        case 'DELIVERY': return 'sales-delivery';
-        default: return '';
-      }
-    }
-
-    function clearData() {
-      currentData = [];
-      document.getElementById("linkTableBody").innerHTML = '';
-      document.getElementById('fileName').textContent = '';
-      document.getElementById('fileInput').value = '';
-      document.getElementById('generateBtn').disabled = true;
-      document.getElementById('emptyState').style.display = 'block';
-      updateButtonStates();
-    }
-
-    function updateButtonStates() {
-      const hasData = currentData.length > 0;
-      document.getElementById('copyAllBtn').disabled = !hasData;
-      document.getElementById('exportBtn').disabled = !hasData;
-    }
-
-    // Copy link function
-    function copyLink(index) {
-      const row = currentData[index];
-      if (!row || !row.link) return;
-      
-      const btn = event.target.closest('button');
-      
-      // Use modern clipboard API with fallback
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(row.link).then(() => {
-          handleCopySuccess(btn);
-        }).catch(err => {
-          // Fallback for older browsers
-          useFallbackCopyMethod(row.link, btn);
-        });
-      } else {
-        // Fallback for older browsers
-        useFallbackCopyMethod(row.link, btn);
-      }
-    }
-
-    function useFallbackCopyMethod(link, btn) {
-      const textArea = document.createElement('textarea');
-      textArea.value = link;
-      textArea.style.position = 'fixed';
-      textArea.style.opacity = '0';
-      document.body.appendChild(textArea);
-      textArea.select();
-      
-      try {
-        document.execCommand('copy');
-        handleCopySuccess(btn);
-      } catch (err) {
-        showNotification('Failed to copy link. Please try again.', 'warning');
-      }
-      
-      document.body.removeChild(textArea);
-    }
-
-    function handleCopySuccess(btn) {
-      // Update button
-      btn.innerHTML = '<i class="fas fa-check"></i> Copied';
-      btn.disabled = true;
-      
-      showNotification('Link copied to clipboard!', 'success');
-    }
-
-    function copyAllLinks() {
-      if (currentData.length === 0) {
-        showNotification("No links to copy!", "warning");
-        return;
-      }
-      
-      const allLinks = currentData.map(r => r.link).filter(Boolean).join("\n");
-      
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(allLinks).then(() => {
-          showNotification("All links copied to clipboard!", "success");
-        }).catch(err => {
-          useFallbackCopyMethod(allLinks);
-          showNotification("All links copied to clipboard!", "success");
-        });
-      } else {
-        useFallbackCopyMethod(allLinks);
-        showNotification("All links copied to clipboard!", "success");
-      }
-    }
-
-    function exportToCSV() {
-      if (currentData.length === 0) {
-        showNotification("No data to export!", "warning");
-        return;
-      }
-      
-      let csv = "Receipt No.,Sales Type,Generated Link\n";
-      currentData.forEach(r => {
-        if (r.link) {
-          csv += `"${r['Receipt No.'] || 'N/A'}","${r['Sales Type'] || 'N/A'}","${r.link}"\n`;
-        }
-      });
-      
-      const blob = new Blob([csv], {type: 'text/csv'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = "survey_links.csv";
-      a.click();
-      URL.revokeObjectURL(url);
-      
-      showNotification("CSV file exported successfully!", "success");
-    }
-
-    function generateSurveyLink(row) {
-      const receipt = row['Receipt No.'], sales = row['Sales Type'];
-      let SM = '', OI = '', OT = '';
-      
-      if (receipt && receipt.startsWith('K281')) {
-        if (sales === 'TAKEAWAY') {
-          SM = '4.0'; OI = receipt.slice(-4); OT = '2';
-        } else if (sales === 'DINE-IN') {
-          SM = '4.0'; OI = receipt.slice(-4); OT = '1';
-        } else if (sales === 'DELIVERY') {
-          SM = '3.0'; OI = receipt; OT = '3';
+      if (docNumber && docNumber.startsWith(config.setting1)) {
+        if (docType === 'TAKEAWAY') {
+          param1 = '4.0'; param2 = docNumber.slice(-4); param3 = '2';
+        } else if (docType === 'DINE-IN') {
+          param1 = '4.0'; param2 = docNumber.slice(-4); param3 = '1';
+        } else if (docType === 'DELIVERY') {
+          param1 = '3.0'; param2 = docNumber; param3 = '3';
         } else {
           return null;
         }
@@ -551,69 +373,215 @@
         return null;
       }
       
-      const D = convertExcelDate(row['Date']);
-      const TM = convertExcelTime(row['Time']);
-      const PH = row['Sell-to Contact No.'] ? `91${row['Sell-to Contact No.']}` : '';
-      const DTM = `${D}T${TM}Z`;
+      const dateValue = formatDate(row['Date']);
+      const timeValue = formatTime(row['Time']);
+      const phoneValue = row['Sell-to Contact No.'] ? `91${row['Sell-to Contact No.']}` : '';
+      const timestamp = `${dateValue}T${timeValue}Z`;
       
-      const data = {
-        "S": storeID,
-        "OI": OI,
-        "D": D,
-        "TM": TM,
-        "DTM": DTM,
-        "TI": OI,
-        "OT": OT,
-        "SM": SM,
-        "PH": PH
+      const dataObject = {
+        "S": config.setting2,
+        "OI": param2,
+        "D": dateValue,
+        "TM": timeValue,
+        "DTM": timestamp,
+        "TI": param2,
+        "OT": param3,
+        "SM": param1,
+        "PH": phoneValue
       };
       
-      return `https://customer.kfc-listens.com/jfe/form/SV_8bHC0noyvM3jPWC?Q_EED=${btoa(JSON.stringify(data))}`;
+      return `https://customer.kfc-listens.com/jfe/form/SV_8bHC0noyvM3jPWC?Q_EED=${btoa(JSON.stringify(dataObject))}`;
     }
-
-    function convertExcelDate(serial) {
+    
+    // Date formatting function
+    function formatDate(serial) {
       if (!serial || isNaN(serial)) return "N/A";
-      const date = new Date((serial - 25569) * 86400 * 1000);
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      const dateObj = new Date((serial - 25569) * 86400 * 1000);
+      return `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}-${String(dateObj.getDate()).padStart(2, '0')}`;
     }
-
-    function convertExcelTime(serial) {
+    
+    // Time formatting function
+    function formatTime(serial) {
       if (!serial || isNaN(serial)) return "00:00:00";
       const totalMs = Math.round(serial * 24 * 60 * 60 * 1000);
-      const h = String(Math.floor(totalMs / (60 * 60 * 1000))).padStart(2, '0');
-      const m = String(Math.floor((totalMs % (60 * 60 * 1000)) / (60 * 1000))).padStart(2, '0');
-      const s = String(Math.floor((totalMs % (60 * 1000)) / 1000)).padStart(2, '0');
-      return `${h}:${m}:${s}`;
+      const hours = String(Math.floor(totalMs / (60 * 60 * 1000))).padStart(2, '0');
+      const minutes = String(Math.floor((totalMs % (60 * 60 * 1000)) / (60 * 1000))).padStart(2, '0');
+      const seconds = String(Math.floor((totalMs % (60 * 1000)) / 1000)).padStart(2, '0');
+      return `${hours}:${minutes}:${seconds}`;
     }
-
-    function showNotification(message, type) {
+    
+    // Display results with animation
+    function displayResults() {
+      const tableBody = document.getElementById("linkTableBody");
+      const emptyMsg = document.getElementById('emptyState');
+      
+      if (appData.length === 0) {
+        tableBody.innerHTML = '';
+        emptyMsg.style.display = 'block';
+        updateButtons();
+        return;
+      }
+      
+      emptyMsg.style.display = 'none';
+      tableBody.innerHTML = '';
+      
+      appData.forEach((item, index) => {
+        if (item.result) {
+          const row = document.createElement('tr');
+          const typeClass = getTypeClass(item['Sales Type']);
+          
+          row.innerHTML = `
+            <td class="font-medium">${safeText(item['Receipt No.'] || 'N/A')}</td>
+            <td><span class="sales-badge ${typeClass}">${safeText(item['Sales Type'] || 'N/A')}</span></td>
+            <td>
+              <button onclick="copyItem(${index})" class="btn btn-primary">
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </td>
+          `;
+          tableBody.appendChild(row);
+        }
+      });
+      
+      updateButtons();
+    }
+    
+    function getTypeClass(type) {
+      switch(type) {
+        case 'DINE-IN': return 'sales-dinein';
+        case 'TAKEAWAY': return 'sales-takeaway';
+        case 'DELIVERY': return 'sales-delivery';
+        default: return '';
+      }
+    }
+    
+    function clearData() {
+      appData = [];
+      document.getElementById("linkTableBody").innerHTML = '';
+      document.getElementById('fileName').textContent = '';
+      document.getElementById('fileInput').value = '';
+      document.getElementById('generateBtn').disabled = true;
+      document.getElementById('emptyState').style.display = 'block';
+      updateButtons();
+    }
+    
+    function updateButtons() {
+      const hasData = appData.length > 0;
+      document.getElementById('copyAllBtn').disabled = !hasData;
+      document.getElementById('exportBtn').disabled = !hasData;
+    }
+    
+    function copyItem(index) {
+      const item = appData[index];
+      if (!item || !item.result) return;
+      
+      const button = event.target.closest('button');
+      
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(item.result).then(() => {
+          handleCopySuccess(button);
+        }).catch(err => {
+          fallbackCopy(item.result, button);
+        });
+      } else {
+        fallbackCopy(item.result, button);
+      }
+    }
+    
+    function fallbackCopy(text, button) {
+      const tempElement = document.createElement('textarea');
+      tempElement.value = text;
+      tempElement.style.position = 'fixed';
+      tempElement.style.opacity = '0';
+      document.body.appendChild(tempElement);
+      tempElement.select();
+      
+      try {
+        document.execCommand('copy');
+        handleCopySuccess(button);
+      } catch (err) {
+        showMessage('Failed to copy. Please try again.', 'warning');
+      }
+      
+      document.body.removeChild(tempElement);
+    }
+    
+    function handleCopySuccess(button) {
+      button.innerHTML = '<i class="fas fa-check"></i> Copied';
+      button.disabled = true;
+      showMessage('Copied to clipboard!', 'success');
+    }
+    
+    function copyAllData() {
+      if (appData.length === 0) {
+        showMessage("No data to copy!", "warning");
+        return;
+      }
+      
+      const allText = appData.map(item => item.result).filter(Boolean).join("\n");
+      
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(allText).then(() => {
+          showMessage("All data copied to clipboard!", "success");
+        }).catch(err => {
+          fallbackCopy(allText);
+          showMessage("All data copied to clipboard!", "success");
+        });
+      } else {
+        fallbackCopy(allText);
+        showMessage("All data copied to clipboard!", "success");
+      }
+    }
+    
+    function exportData() {
+      if (appData.length === 0) {
+        showMessage("No data to export!", "warning");
+        return;
+      }
+      
+      let csvContent = "Document No.,Type,Result\n";
+      appData.forEach(item => {
+        if (item.result) {
+          csvContent += `"${item['Receipt No.'] || 'N/A'}","${item['Sales Type'] || 'N/A'}","${item.result}"\n`;
+        }
+      });
+      
+      const blob = new Blob([csvContent], {type: 'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = "processed_data.csv";
+      link.click();
+      URL.revokeObjectURL(url);
+      
+      showMessage("File exported successfully!", "success");
+    }
+    
+    function showMessage(text, type) {
       const container = document.getElementById('notificationContainer');
-      const notification = document.createElement('div');
-      notification.className = `notification ${type === 'warning' ? 'warning' : ''}`;
-      notification.textContent = message;
+      const message = document.createElement('div');
+      message.className = `notification ${type === 'warning' ? 'warning' : ''}`;
+      message.textContent = text;
       
-      container.appendChild(notification);
+      container.appendChild(message);
       
-      // Show notification
       setTimeout(() => {
-        notification.classList.add('show');
+        message.classList.add('show');
       }, 10);
       
-      // Hide after 3 seconds
       setTimeout(() => {
-        notification.classList.remove('show');
+        message.classList.remove('show');
         setTimeout(() => {
-          if (container.contains(notification)) {
-            container.removeChild(notification);
+          if (container.contains(message)) {
+            container.removeChild(message);
           }
         }, 300);
       }, 3000);
     }
-
-    // Utility function to escape HTML
-    function escapeHtml(unsafe) {
-      if (unsafe === undefined || unsafe === null) return '';
-      return unsafe
+    
+    function safeText(input) {
+      if (input === undefined || input === null) return '';
+      return input
         .toString()
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -621,6 +589,38 @@
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
     }
+    
+    // Initialize file input handling
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        document.getElementById('fileName').textContent = `Selected: ${file.name}`;
+        document.getElementById('generateBtn').disabled = false;
+      }
+    });
+
+    // Initialize drag and drop
+    const uploadArea = document.getElementById('fileUploadArea');
+    uploadArea.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      uploadArea.classList.add('dragover');
+    });
+    
+    uploadArea.addEventListener('dragleave', function(e) {
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
+    });
+    
+    uploadArea.addEventListener('drop', function(e) {
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        document.getElementById('fileInput').files = files;
+        document.getElementById('fileName').textContent = `Selected: ${files[0].name}`;
+        document.getElementById('generateBtn').disabled = false;
+      }
+    });
   </script>
 </body>
 </html>
