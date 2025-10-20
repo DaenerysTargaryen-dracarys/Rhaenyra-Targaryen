@@ -3,732 +3,415 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NeoLink | Survey Generator</title>
+  <title>Survey Link Generator</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --neon-blue: #00f3ff;
-      --neon-purple: #b967ff;
-      --neon-pink: #ff2a6d;
-      --dark-bg: #0a0a16;
-      --card-bg: rgba(16, 18, 37, 0.7);
-      --accent: #6c42f5;
-    }
-    
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
     body {
-      background: var(--dark-bg);
-      font-family: 'Exo 2', sans-serif;
-      color: white;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
-      overflow-x: hidden;
-      background-image: 
-        radial-gradient(circle at 10% 20%, rgba(108, 66, 245, 0.1) 0%, transparent 20%),
-        radial-gradient(circle at 90% 80%, rgba(255, 42, 109, 0.1) 0%, transparent 20%),
-        radial-gradient(circle at 50% 50%, rgba(0, 243, 255, 0.05) 0%, transparent 30%);
     }
     
-    .neon-text {
-      text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue), 0 0 30px var(--neon-blue);
-    }
-    
-    .cyber-border {
-      position: relative;
-      border: 1px solid rgba(0, 243, 255, 0.3);
-      background: var(--card-bg);
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(10px);
-      border-radius: 12px;
-      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
     
-    .cyber-border::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
-      animation: scanline 3s linear infinite;
-    }
-    
-    .cyber-border::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--neon-purple), transparent);
-      animation: scanline 2.5s linear infinite reverse;
-    }
-    
-    @keyframes scanline {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-    
-    .hologram-card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 2rem;
-      margin-bottom: 2rem;
-      position: relative;
-      overflow: hidden;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(108, 66, 245, 0.2);
-      box-shadow: 
-        0 10px 30px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-      transition: all 0.4s ease;
-    }
-    
-    .hologram-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(108, 66, 245, 0.1) 0%, rgba(0, 243, 255, 0.05) 100%);
-      z-index: -1;
-    }
-    
-    .hologram-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 
-        0 15px 40px rgba(0, 0, 0, 0.4),
-        0 0 20px rgba(108, 66, 245, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    }
-    
-    .neon-button {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--neon-purple) 100%);
-      border: none;
-      border-radius: 50px;
-      padding: 0.9rem 1.8rem;
-      color: white;
-      font-weight: 600;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      box-shadow: 0 5px 15px rgba(108, 66, 245, 0.4);
-    }
-    
-    .neon-button::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: 0.5s;
-    }
-    
-    .neon-button:hover::before {
-      left: 100%;
-    }
-    
-    .neon-button:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(108, 66, 245, 0.6);
-    }
-    
-    .neon-button:active {
-      transform: translateY(1px);
-    }
-    
-    .neon-button-secondary {
-      background: transparent;
-      border: 1px solid var(--neon-blue);
-      box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
-    }
-    
-    .neon-button-secondary:hover {
-      background: rgba(0, 243, 255, 0.1);
-      box-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
-    }
-    
-    .glowing-input {
-      background: rgba(16, 18, 37, 0.7);
-      border: 1px solid rgba(108, 66, 245, 0.3);
-      border-radius: 10px;
-      padding: 1rem;
-      color: white;
-      font-family: 'Exo 2', sans-serif;
-      transition: all 0.3s ease;
-      width: 100%;
-    }
-    
-    .glowing-input:focus {
-      outline: none;
-      border-color: var(--neon-blue);
-      box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
-    }
-    
-    .cyber-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: rgba(16, 18, 37, 0.5);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    }
-    
-    .cyber-table th {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--neon-purple) 100%);
-      color: white;
-      padding: 1.2rem;
-      text-align: center;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-size: 0.85rem;
-    }
-    
-    .cyber-table td {
-      padding: 1.2rem;
-      text-align: center;
-      border-bottom: 1px solid rgba(108, 66, 245, 0.2);
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       transition: all 0.3s ease;
     }
     
-    .cyber-table tr:last-child td {
-      border-bottom: none;
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
     }
     
-    .cyber-table tr:hover td {
-      background: rgba(108, 66, 245, 0.1);
+    .btn-secondary {
+      background: #6c757d;
+      transition: all 0.3s ease;
     }
     
-    .cyber-table tr.copied td {
-      background: rgba(0, 243, 255, 0.1);
+    .btn-secondary:hover {
+      background: #5a6268;
+      transform: translateY(-1px);
     }
     
-    .floating {
-      animation: floating 6s ease-in-out infinite;
+    .file-upload-area {
+      transition: all 0.3s ease;
+      border: 2px dashed #dee2e6;
     }
     
-    @keyframes floating {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-      100% { transform: translateY(0px); }
+    .file-upload-area.dragover {
+      border-color: #667eea;
+      background: rgba(102, 126, 234, 0.05);
     }
     
-    .pulse {
-      animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(108, 66, 245, 0.7); }
-      70% { box-shadow: 0 0 0 10px rgba(108, 66, 245, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(108, 66, 245, 0); }
-    }
-    
-    .matrix-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      opacity: 0.03;
-    }
-    
-    .header-glow {
-      background: linear-gradient(135deg, rgba(108, 66, 245, 0.2) 0%, rgba(0, 243, 255, 0.1) 100%);
+    .status-badge {
+      padding: 4px 12px;
       border-radius: 20px;
-      padding: 3rem 2rem;
-      text-align: center;
-      margin-bottom: 2rem;
-      position: relative;
-      overflow: hidden;
+      font-size: 0.75rem;
+      font-weight: 600;
     }
     
-    .header-glow::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(108, 66, 245, 0.1) 0%, transparent 70%);
-      animation: rotate 20s linear infinite;
+    .status-ready {
+      background: #d1ecf1;
+      color: #0c5460;
     }
     
-    @keyframes rotate {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    .file-upload-zone {
-      border: 2px dashed rgba(108, 66, 245, 0.5);
-      border-radius: 16px;
-      padding: 3rem 2rem;
-      text-align: center;
-      margin: 1.5rem 0;
-      transition: all 0.3s ease;
-      background: rgba(16, 18, 37, 0.5);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .file-upload-zone:hover {
-      border-color: var(--neon-blue);
-      background: rgba(16, 18, 37, 0.7);
-    }
-    
-    .file-upload-zone.dragover {
-      border-color: var(--neon-blue);
-      background: rgba(16, 18, 37, 0.8);
-      box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
-    }
-    
-    .progress-container {
-      width: 100%;
-      height: 8px;
-      background: rgba(16, 18, 37, 0.7);
-      border-radius: 4px;
-      margin: 1.5rem 0;
-      overflow: hidden;
-      position: relative;
+    .status-copied {
+      background: #d4edda;
+      color: #155724;
     }
     
     .progress-bar {
-      height: 100%;
-      background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue));
-      width: 0%;
-      transition: width 0.5s;
-      border-radius: 4px;
-      position: relative;
-      overflow: hidden;
+      transition: width 0.5s ease-in-out;
     }
     
-    .progress-bar::after {
-      content: '';
+    .table-row {
+      transition: all 0.2s ease;
+    }
+    
+    .table-row:hover {
+      background: #f8f9fa;
+    }
+    
+    .copied-row {
+      background: #f8fff9 !important;
+    }
+    
+    .success-message {
+      animation: fadeOut 2s ease-in-out 1s forwards;
+    }
+    
+    @keyframes fadeOut {
+      to { opacity: 0; transform: translateY(-10px); }
+    }
+    
+    /* Hidden textarea for copy fallback */
+    #copyHelper {
       position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      width: 20px;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-      animation: progress-shine 1.5s infinite;
-    }
-    
-    @keyframes progress-shine {
-      0% { transform: translateX(-20px); }
-      100% { transform: translateX(100%); }
-    }
-    
-    .info-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-    
-    .info-card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 1.5rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s ease;
-      border: 1px solid rgba(108, 66, 245, 0.2);
-    }
-    
-    .info-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 4px;
-      background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue));
-    }
-    
-    .info-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    }
-    
-    .particles {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      pointer-events: none;
-    }
-    
-    .particle {
-      position: absolute;
-      width: 2px;
-      height: 2px;
-      background: var(--neon-blue);
-      border-radius: 50%;
-      animation: particle-float 20s infinite linear;
-    }
-    
-    @keyframes particle-float {
-      0% {
-        transform: translateY(100vh) translateX(0);
-        opacity: 0;
-      }
-      10% {
-        opacity: 1;
-      }
-      90% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-100px) translateX(100px);
-        opacity: 0;
-      }
-    }
-    
-    .logo {
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 900;
-      font-size: 2.5rem;
-      background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-purple) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 0.5rem;
-    }
-    
-    .tagline {
-      font-size: 1.1rem;
-      color: rgba(255, 255, 255, 0.7);
-      margin-bottom: 1rem;
-    }
-    
-    .results-badge {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--neon-purple) 100%);
-      border-radius: 50px;
-      padding: 0.5rem 1.2rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      box-shadow: 0 5px 15px rgba(108, 66, 245, 0.4);
-    }
-    
-    .loader {
-      display: none;
-      text-align: center;
-      margin-top: 1rem;
-    }
-    
-    .loader-dots {
-      display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-top: 1rem;
-    }
-    
-    .loader-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--neon-blue);
-      animation: loader-bounce 1.4s infinite ease-in-out both;
-    }
-    
-    .loader-dot:nth-child(1) { animation-delay: -0.32s; }
-    .loader-dot:nth-child(2) { animation-delay: -0.16s; }
-    
-    @keyframes loader-bounce {
-      0%, 80%, 100% { transform: scale(0); }
-      40% { transform: scale(1); }
-    }
-    
-    @media (max-width: 768px) {
-      .hologram-card {
-        padding: 1.5rem;
-      }
-      
-      .cyber-table {
-        font-size: 0.85rem;
-      }
-      
-      .cyber-table th, .cyber-table td {
-        padding: 0.8rem 0.5rem;
-      }
-      
-      .logo {
-        font-size: 2rem;
-      }
+      left: -9999px;
+      opacity: 0;
     }
   </style>
 </head>
-<body class="min-h-screen p-4">
-  <!-- Animated Background -->
-  <div class="particles" id="particles"></div>
-  
-  <div class="w-full max-w-6xl mx-auto">
+<body class="min-h-screen p-4 flex items-center justify-center">
+  <div class="w-full max-w-6xl">
     
     <!-- Header -->
-    <div class="header-glow floating">
-      <div class="logo">NEO<span class="neon-text">LINK</span></div>
-      <p class="tagline">Advanced Survey Link Generation System</p>
-      <div class="flex justify-center mt-4">
-        <div class="cyber-border px-4 py-2">
-          <span class="text-sm">Store Name Horamavu </span>
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold text-white mb-2">Survey Link Generator</h1>
+      <p class="text-white text-opacity-90 text-lg">Create survey links from Excel data</p>
+      <div class="inline-block bg-white bg-opacity-20 px-4 py-2 rounded-full mt-3">
+        <span class="text-white font-medium">Store: Horamavu</span>
+      </div>
+    </div>
+
+    <!-- Success Message -->
+    <div id="successMessage" class="hidden fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 success-message">
+      <i class="fas fa-check-circle mr-2"></i>
+      <span id="successText">Operation completed successfully!</span>
+    </div>
+
+    <!-- Error Message -->
+    <div id="errorMessage" class="hidden fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 success-message">
+      <i class="fas fa-exclamation-triangle mr-2"></i>
+      <span id="errorText">Operation failed!</span>
+    </div>
+
+    <!-- Hidden textarea for copy fallback -->
+    <textarea id="copyHelper"></textarea>
+
+    <!-- Main Card -->
+    <div class="glass-card rounded-2xl shadow-xl p-6 mb-6">
+      <div class="flex items-center mb-6">
+        <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center mr-3">
+          <i class="fas fa-file-excel text-white"></i>
+        </div>
+        <div>
+          <h2 class="text-2xl font-bold text-gray-800">Upload Excel File</h2>
+          <p class="text-gray-600">Upload your sales data to generate survey links</p>
         </div>
       </div>
-    </div>
 
-    <!-- Info Cards -->
-    <div class="info-grid">
-      <div class="info-card">
-        <i class="fas fa-bolt text-2xl mb-3" style="color: var(--neon-blue);"></i>
-        <h3 class="font-bold mb-1">Ultra Fast</h3>
-        <p class="text-sm opacity-75">Generate hundreds of links in seconds</p>
-      </div>
-      <div class="info-card">
-        <i class="fas fa-shield-alt text-2xl mb-3" style="color: var(--neon-purple);"></i>
-        <h3 class="font-bold mb-1">Secure</h3>
-        <p class="text-sm opacity-75">Your data remains private and secure</p>
-      </div>
-      <div class="info-card">
-        <i class="fas fa-rocket text-2xl mb-3" style="color: var(--neon-pink);"></i>
-        <h3 class="font-bold mb-1">Advanced</h3>
-        <p class="text-sm opacity-75">Cutting-edge technology for optimal results</p>
-      </div>
-    </div>
-
-    <!-- Upload Panel -->
-    <div class="hologram-card">
-      <h3 class="text-2xl font-bold mb-2 flex items-center gap-2">
-        <i class="fas fa-file-import" style="color: var(--neon-blue);"></i> 
-        Data Import Module
-      </h3>
-      <p class="opacity-75 mb-6">Upload your Excel file to initiate the link generation process</p>
-      
-      <div class="file-upload-zone" id="fileUploadArea">
-        <i class="fas fa-cloud-upload-alt text-4xl mb-4" style="color: var(--neon-purple);"></i>
-        <p class="text-lg mb-2">Drag & Drop Your Excel File</p>
-        <p class="text-sm opacity-75 mb-4">Supports .xlsx and .xls formats</p>
+      <!-- File Upload -->
+      <div class="file-upload-area rounded-xl p-8 text-center cursor-pointer mb-6" id="fileUploadArea">
+        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+        <p class="text-lg font-medium text-gray-700 mb-2">Drag & drop your Excel file here</p>
+        <p class="text-gray-500 mb-4">Supports .xlsx and .xls formats</p>
         <input type="file" id="fileInput" accept=".xlsx, .xls" class="hidden">
-        <button onclick="document.getElementById('fileInput').click()" class="neon-button neon-button-secondary">
-          <i class="fas fa-folder-open"></i> Browse Files
+        <button onclick="document.getElementById('fileInput').click()" class="btn-secondary px-6 py-3 rounded-lg text-white font-medium">
+          <i class="fas fa-folder-open mr-2"></i> Choose File
         </button>
-        <p id="fileName" class="text-sm mt-3 opacity-75"></p>
+        <p id="fileName" class="text-sm text-gray-500 mt-3"></p>
       </div>
-      
-      <div class="progress-container">
-        <div id="progressBar" class="progress-bar"></div>
-      </div>
-      
-      <div class="flex flex-wrap gap-3 mt-6">
-        <button id="generateBtn" onclick="processFile()" class="neon-button pulse" disabled>
-          <i class="fas fa-cogs"></i> Generate Links
-        </button>
-        <button onclick="clearData()" class="neon-button neon-button-secondary">
-          <i class="fas fa-eraser"></i> Clear All
-        </button>
-        <button id="copyAllBtn" onclick="copyAllLinks()" disabled class="neon-button neon-button-secondary">
-          <i class="fas fa-copy"></i> Copy All
-        </button>
-        <button id="exportBtn" onclick="exportToCSV()" disabled class="neon-button neon-button-secondary">
-          <i class="fas fa-file-export"></i> Export CSV
-        </button>
-      </div>
-      
-      <div id="loader" class="loader">
-        <p>Processing data and generating survey links...</p>
-        <div class="loader-dots">
-          <div class="loader-dot"></div>
-          <div class="loader-dot"></div>
-          <div class="loader-dot"></div>
+
+      <!-- Progress Bar -->
+      <div class="mb-6">
+        <div class="flex justify-between text-sm text-gray-600 mb-2">
+          <span>Processing progress</span>
+          <span id="progressText">0%</span>
         </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div id="progressBar" class="progress-bar h-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap gap-3">
+        <button id="generateBtn" onclick="processFile()" class="btn-primary px-6 py-3 rounded-lg text-white font-medium flex items-center" disabled>
+          <i class="fas fa-cogs mr-2"></i> Generate Links
+        </button>
+        <button onclick="clearData()" class="btn-secondary px-6 py-3 rounded-lg text-white font-medium flex items-center">
+          <i class="fas fa-eraser mr-2"></i> Clear All
+        </button>
+        <button id="copyAllBtn" onclick="copyAllLinks()" disabled class="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-lg text-white font-medium flex items-center transition-all">
+          <i class="fas fa-copy mr-2"></i> Copy All Links
+        </button>
+        <button id="exportBtn" onclick="exportToCSV()" disabled class="bg-teal-500 hover:bg-teal-600 px-6 py-3 rounded-lg text-white font-medium flex items-center transition-all">
+          <i class="fas fa-file-export mr-2"></i> Export CSV
+        </button>
+      </div>
+
+      <!-- Loading Indicator -->
+      <div id="loader" class="hidden mt-6 text-center">
+        <div class="inline-flex items-center">
+          <div class="w-4 h-4 bg-blue-500 rounded-full mr-2 animate-bounce"></div>
+          <div class="w-4 h-4 bg-blue-500 rounded-full mr-2 animate-bounce" style="animation-delay: 0.1s"></div>
+          <div class="w-4 h-4 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+        </div>
+        <p class="text-gray-600 mt-2">Processing your data...</p>
       </div>
     </div>
 
-    <!-- Results Panel -->
-    <div class="hologram-card">
+    <!-- Results Section -->
+    <div class="glass-card rounded-2xl shadow-xl p-6">
       <div class="flex justify-between items-center mb-6">
-        <h3 class="text-2xl font-bold flex items-center gap-2">
-          <i class="fas fa-link" style="color: var(--neon-blue);"></i> 
-          Generated Links
-        </h3>
-        <div id="resultsCount" class="results-badge">
-          <i class="fas fa-hashtag"></i> <span>0</span> Links Generated
+        <div class="flex items-center">
+          <div class="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mr-3">
+            <i class="fas fa-link text-white text-sm"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-800">Generated Links</h2>
+        </div>
+        <div id="resultsCount" class="bg-gradient-to-r from-green-400 to-blue-500 text-white px-4 py-2 rounded-full font-medium">
+          <i class="fas fa-hashtag mr-1"></i> <span>0</span> Links
         </div>
       </div>
-      
-      <div class="overflow-x-auto rounded-xl">
-        <table class="cyber-table" id="linkTable">
-          <thead>
+
+      <!-- Results Table -->
+      <div class="overflow-x-auto rounded-xl border border-gray-200">
+        <table class="w-full">
+          <thead class="bg-gray-50">
             <tr>
-              <th>Receipt No.</th>
-              <th>Sales Type</th>
-              <th>Status</th>
-              <th>Action</th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Receipt No.</th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sales Type</th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
             </tr>
           </thead>
-          <tbody></tbody>
+          <tbody id="linkTableBody" class="bg-white divide-y divide-gray-200">
+            <!-- Rows will be inserted here by JavaScript -->
+          </tbody>
         </table>
+        
+        <!-- Empty State -->
+        <div id="emptyState" class="text-center py-12">
+          <i class="fas fa-inbox text-4xl text-gray-300 mb-4"></i>
+          <p class="text-gray-500">No data processed yet. Upload an Excel file to get started.</p>
+        </div>
       </div>
     </div>
-    
-    <!-- Footer -->
-    <div class="text-center mt-8 opacity-50 text-sm">
-      <p>NEO<span class="neon-text">LINK</span> • Advanced Survey Technology</p>
-      <p class="mt-1">Designed by <span class="font-bold" style="color: var(--neon-purple);">MATRIX</span> • All Systems Operational</p>
-    </div>
 
+    <!-- Footer -->
+    <div class="text-center mt-8 text-white text-opacity-70">
+      <p>Survey Link Generator • All systems operational</p>
+    </div>
   </div>
 
   <!-- XLSX Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script>
-    // Create animated background particles
-    function createParticles() {
-      const particlesContainer = document.getElementById('particles');
-      const particleCount = 50;
-      
-      for (let i = 0; i < particleCount; i++) {
-        const particle = document.createElement('div');
-        particle.classList.add('particle');
-        
-        // Random position
-        const left = Math.random() * 100;
-        const delay = Math.random() * 20;
-        const duration = 15 + Math.random() * 15;
-        
-        particle.style.left = `${left}%`;
-        particle.style.animationDelay = `${delay}s`;
-        particle.style.animationDuration = `${duration}s`;
-        
-        // Random size
-        const size = 1 + Math.random() * 3;
-        particle.style.width = `${size}px`;
-        particle.style.height = `${size}px`;
-        
-        // Random color variation
-        const colors = ['#00f3ff', '#b967ff', '#6c42f5', '#ff2a6d'];
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        particle.style.background = color;
-        
-        particlesContainer.appendChild(particle);
-      }
-    }
-    
-    // Initialize particles
-    createParticles();
-    
-    let currentData = [], copiedLinks = new Set(JSON.parse(localStorage.getItem("copiedLinks")||"[]"));
+    let currentData = [];
+    let copiedLinks = new Set(JSON.parse(localStorage.getItem("copiedLinks") || "[]"));
     const storeID = "91KDIPL879-01";
 
-    // File input handling
-    document.getElementById('fileInput').addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (file) {
-        document.getElementById('fileName').textContent = `Selected: ${file.name}`;
-        document.getElementById('generateBtn').disabled = false;
-        document.getElementById('generateBtn').classList.add('pulse');
-      }
+    // Initialize event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      // File input handling
+      document.getElementById('fileInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          document.getElementById('fileName').textContent = `Selected: ${file.name}`;
+          document.getElementById('fileName').className = 'text-sm text-green-600 font-medium mt-3';
+          document.getElementById('generateBtn').disabled = false;
+          showSuccess('File selected successfully!');
+        }
+      });
+
+      // Drag and drop functionality
+      const fileUploadArea = document.getElementById('fileUploadArea');
+      
+      fileUploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        fileUploadArea.classList.add('dragover');
+      });
+      
+      fileUploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        fileUploadArea.classList.remove('dragover');
+      });
+      
+      fileUploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        fileUploadArea.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0 && (files[0].name.endsWith('.xlsx') || files[0].name.endsWith('.xls'))) {
+          document.getElementById('fileInput').files = files;
+          document.getElementById('fileName').textContent = `Selected: ${files[0].name}`;
+          document.getElementById('fileName').className = 'text-sm text-green-600 font-medium mt-3';
+          document.getElementById('generateBtn').disabled = false;
+          showSuccess('File dropped successfully!');
+        } else {
+          showError('Please drop a valid Excel file (.xlsx or .xls)');
+        }
+      });
     });
 
-    // Drag and drop functionality
-    const fileUploadArea = document.getElementById('fileUploadArea');
-    fileUploadArea.addEventListener('dragover', function(e) {
-      e.preventDefault();
-      fileUploadArea.classList.add('dragover');
-    });
-    
-    fileUploadArea.addEventListener('dragleave', function(e) {
-      e.preventDefault();
-      fileUploadArea.classList.remove('dragover');
-    });
-    
-    fileUploadArea.addEventListener('drop', function(e) {
-      e.preventDefault();
-      fileUploadArea.classList.remove('dragover');
-      const files = e.dataTransfer.files;
-      if (files.length > 0) {
-        document.getElementById('fileInput').files = files;
-        document.getElementById('fileName').textContent = `Selected: ${files[0].name}`;
-        document.getElementById('generateBtn').disabled = false;
-        document.getElementById('generateBtn').classList.add('pulse');
-      }
-    });
+    function showSuccess(message) {
+      const successDiv = document.getElementById('successMessage');
+      const successText = document.getElementById('successText');
+      
+      successText.textContent = message;
+      successDiv.classList.remove('hidden');
+      successDiv.style.opacity = '1';
+      successDiv.style.transform = 'translateY(0)';
+      
+      setTimeout(() => {
+        successDiv.classList.add('hidden');
+      }, 3000);
+    }
 
-    function processFile(){
+    function showError(message) {
+      const errorDiv = document.getElementById('errorMessage');
+      const errorText = document.getElementById('errorText');
+      
+      errorText.textContent = message;
+      errorDiv.classList.remove('hidden');
+      errorDiv.style.opacity = '1';
+      errorDiv.style.transform = 'translateY(0)';
+      
+      setTimeout(() => {
+        errorDiv.classList.add('hidden');
+      }, 3000);
+    }
+
+    function updateProgress(percentage, text) {
+      document.getElementById('progressBar').style.width = percentage + '%';
+      document.getElementById('progressText').textContent = text;
+    }
+
+    function processFile() {
       const file = document.getElementById('fileInput').files[0];
-      if(!file) return;
-      
-      document.getElementById('loader').style.display = 'block';
-      document.getElementById('progressBar').style.width = '30%';
-      document.getElementById('generateBtn').classList.remove('pulse');
-      
+      if (!file) {
+        showError('Please select a file first');
+        return;
+      }
+
+      document.getElementById('loader').classList.remove('hidden');
+      document.getElementById('generateBtn').disabled = true;
+      updateProgress(30, 'Reading file...');
+
       const reader = new FileReader();
       reader.onload = function(e) {
-        document.getElementById('progressBar').style.width = '60%';
+        updateProgress(60, 'Processing data...');
         
-        const data = new Uint8Array(e.target.result);
-        const wb = XLSX.read(data, {type: 'array'});
-        const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
-        
-        document.getElementById('progressBar').style.width = '90%';
-        
-        currentData = rows.map(r => ({...r, link: generateSurveyLink(r)}));
-        renderTable();
-        
-        document.getElementById('loader').style.display = 'none';
-        document.getElementById('progressBar').style.width = '100%';
-        
-        setTimeout(() => {
-          document.getElementById('progressBar').style.width = '0%';
-        }, 1000);
+        try {
+          const data = new Uint8Array(e.target.result);
+          const wb = XLSX.read(data, { type: 'array' });
+          const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+          
+          updateProgress(90, 'Generating links...');
+          
+          currentData = rows.map(r => ({ ...r, link: generateSurveyLink(r) }));
+          renderTable();
+          
+          document.getElementById('loader').classList.add('hidden');
+          updateProgress(100, 'Complete!');
+          
+          setTimeout(() => {
+            updateProgress(0, '0%');
+          }, 1000);
+          
+          showSuccess(`Successfully processed ${rows.length} records!`);
+        } catch (error) {
+          document.getElementById('loader').classList.add('hidden');
+          showError('Error processing file. Please check the format.');
+          console.error('Error:', error);
+        }
       };
+      
+      reader.onerror = function() {
+        document.getElementById('loader').classList.add('hidden');
+        showError('Error reading file');
+      };
+      
       reader.readAsArrayBuffer(file);
     }
 
-    function renderTable(){
-      const tbody = document.querySelector("#linkTable tbody");
+    function renderTable() {
+      const tbody = document.getElementById('linkTableBody');
+      const emptyState = document.getElementById('emptyState');
+      
+      if (currentData.length === 0) {
+        tbody.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+      
+      emptyState.classList.add('hidden');
       tbody.innerHTML = '';
       
-      currentData.forEach(row => {
-        if(row.link){
+      currentData.forEach((row, index) => {
+        if (row.link) {
           const tr = document.createElement('tr');
-          if(copiedLinks.has(row.link)){
-            tr.classList.add("copied");
-            tr.innerHTML = `
-              <td class="font-medium">${row['Receipt No.']}</td>
-              <td>${row['Sales Type']}</td>
-              <td><span class="px-2 py-1 rounded-full text-xs bg-green-900 text-green-300">Copied</span></td>
-              <td><button disabled class="neon-button neon-button-secondary" style="background: transparent; border-color: #10b981; color: #10b981;"><i class="fas fa-check"></i> Copied</button></td>
-            `;
-          } else {
-            tr.innerHTML = `
-              <td class="font-medium">${row['Receipt No.']}</td>
-              <td>${row['Sales Type']}</td>
-              <td><span class="px-2 py-1 rounded-full text-xs bg-blue-900 text-blue-300">Ready</span></td>
-              <td>
-                <button onclick="copyLink('${row.link}', this)" class="neon-button">
-                  <i class="fas fa-copy"></i> Copy
-                </button>
-              </td>
-            `;
-          }
+          tr.className = `table-row ${copiedLinks.has(row.link) ? 'copied-row' : ''}`;
+          
+          const isCopied = copiedLinks.has(row.link);
+          
+          tr.innerHTML = `
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="font-medium text-gray-900">${row['Receipt No.'] || 'N/A'}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                row['Sales Type'] === 'DINE-IN' ? 'bg-blue-100 text-blue-800' :
+                row['Sales Type'] === 'TAKEAWAY' ? 'bg-green-100 text-green-800' :
+                'bg-purple-100 text-purple-800'
+              }">
+                ${row['Sales Type'] || 'N/A'}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="status-badge ${isCopied ? 'status-copied' : 'status-ready'}">
+                <i class="fas ${isCopied ? 'fa-check' : 'fa-clock'} mr-1"></i>
+                ${isCopied ? 'Copied' : 'Ready'}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <button onclick="copySingleLink('${row.link}', ${index})" 
+                class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  isCopied ? 
+                  'bg-green-100 text-green-700 border border-green-200 cursor-default' :
+                  'bg-blue-500 text-white hover:bg-blue-600'
+                }" ${isCopied ? 'disabled' : ''}>
+                <i class="fas ${isCopied ? 'fa-check' : 'fa-copy'} mr-2"></i>
+                ${isCopied ? 'Copied' : 'Copy Link'}
+              </button>
+            </td>
+          `;
           tbody.appendChild(tr);
         }
       });
@@ -738,84 +421,139 @@
       
       // Update results count
       const linkCount = currentData.filter(r => r.link).length;
-      document.getElementById('resultsCount').innerHTML = `<i class="fas fa-hashtag"></i> <span>${linkCount}</span> Links Generated`;
+      document.getElementById('resultsCount').innerHTML = `<i class="fas fa-hashtag mr-1"></i> <span>${linkCount}</span> Links`;
     }
 
-    function clearData(){
+    function clearData() {
       currentData = [];
-      document.querySelector("#linkTable tbody").innerHTML = '';
+      document.getElementById('linkTableBody').innerHTML = '';
+      document.getElementById('emptyState').classList.remove('hidden');
       document.getElementById('copyAllBtn').disabled = true;
       document.getElementById('exportBtn').disabled = true;
-      document.getElementById('resultsCount').innerHTML = '<i class="fas fa-hashtag"></i> <span>0</span> Links Generated';
+      document.getElementById('resultsCount').innerHTML = '<i class="fas fa-hashtag mr-1"></i> <span>0</span> Links';
       document.getElementById('fileName').textContent = '';
+      document.getElementById('fileName').className = 'text-sm text-gray-500 mt-3';
       document.getElementById('fileInput').value = '';
       document.getElementById('generateBtn').disabled = true;
-      document.getElementById('generateBtn').classList.remove('pulse');
+      updateProgress(0, '0%');
+      showSuccess('Data cleared successfully!');
     }
 
-    function copyLink(link, btn){
-      navigator.clipboard.writeText(link).then(() => {
-        copiedLinks.add(link);
-        localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks]));
-        btn.innerHTML = '<i class="fas fa-check"></i> Copied';
-        btn.classList.remove('neon-button');
-        btn.classList.add('neon-button-secondary');
-        btn.style.background = 'transparent';
-        btn.style.borderColor = '#10b981';
-        btn.style.color = '#10b981';
-        btn.disabled = true;
-        btn.closest('tr').classList.add('copied');
-        
-        // Update status in table
-        const statusCell = btn.closest('tr').querySelector('td:nth-child(3)');
-        statusCell.innerHTML = '<span class="px-2 py-1 rounded-full text-xs bg-green-900 text-green-300">Copied</span>';
+    // Reliable copy function with fallback
+    function copyToClipboard(text) {
+      return new Promise((resolve, reject) => {
+        // Method 1: Modern clipboard API
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(text).then(resolve).catch(() => {
+            // Fallback to method 2 if clipboard API fails
+            fallbackCopyText(text) ? resolve() : reject();
+          });
+        } else {
+          // Method 2: Fallback for older browsers or insecure contexts
+          fallbackCopyText(text) ? resolve() : reject();
+        }
       });
     }
 
-    function copyAllLinks(){
-      if(currentData.length === 0) return;
+    // Fallback copy method using textarea
+    function fallbackCopyText(text) {
+      try {
+        const textArea = document.getElementById('copyHelper');
+        textArea.value = text;
+        textArea.style.display = 'block';
+        textArea.focus();
+        textArea.select();
+        
+        const successful = document.execCommand('copy');
+        textArea.style.display = 'none';
+        
+        return successful;
+      } catch (err) {
+        console.error('Fallback copy failed:', err);
+        return false;
+      }
+    }
+
+    function copySingleLink(link, rowIndex) {
+      copyToClipboard(link).then(() => {
+        copiedLinks.add(link);
+        localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks]));
+        
+        // Update the specific row
+        const rows = document.querySelectorAll('#linkTableBody tr');
+        if (rows[rowIndex]) {
+          const button = rows[rowIndex].querySelector('button');
+          const statusBadge = rows[rowIndex].querySelector('.status-badge');
+          
+          button.innerHTML = '<i class="fas fa-check mr-2"></i>Copied';
+          button.className = 'inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-green-100 text-green-700 border border-green-200 cursor-default';
+          button.disabled = true;
+          
+          statusBadge.innerHTML = '<i class="fas fa-check mr-1"></i>Copied';
+          statusBadge.className = 'status-badge status-copied';
+          
+          rows[rowIndex].classList.add('copied-row');
+        }
+        
+        showSuccess('Link copied to clipboard!');
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+        showError('Failed to copy link. Please try again or copy manually.');
+      });
+    }
+
+    function copyAllLinks() {
+      if (currentData.length === 0) {
+        showError('No links to copy');
+        return;
+      }
+      
       const allLinks = currentData.map(r => r.link).filter(Boolean).join("\n");
-      navigator.clipboard.writeText(allLinks).then(() => {
+      copyToClipboard(allLinks).then(() => {
         currentData.forEach(r => r.link ? copiedLinks.add(r.link) : null);
         localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks]));
         renderTable();
-        
-        // Show success message
-        const originalText = document.getElementById('copyAllBtn').innerHTML;
-        document.getElementById('copyAllBtn').innerHTML = '<i class="fas fa-check"></i> All Copied!';
-        setTimeout(() => {
-          document.getElementById('copyAllBtn').innerHTML = originalText;
-        }, 2000);
+        showSuccess('All links copied to clipboard!');
+      }).catch(err => {
+        console.error('Failed to copy all links: ', err);
+        showError('Failed to copy links. Please try again or copy manually.');
       });
     }
 
-    function exportToCSV(){
+    function exportToCSV() {
       let csv = "Receipt No.,Sales Type,Generated Link\n";
-      currentData.forEach(r => r.link ? csv += `${r['Receipt No.']},${r['Sales Type']},${r.link}\n` : null);
-      const blob = new Blob([csv], {type: 'text/csv'});
+      currentData.forEach(r => {
+        if (r.link) {
+          csv += `"${r['Receipt No.'] || ''}","${r['Sales Type'] || ''}","${r.link}"\n`;
+        }
+      });
+      
+      const blob = new Blob([csv], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = "survey_links.csv";
+      document.body.appendChild(a);
       a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
       
-      // Show success message
-      const originalText = document.getElementById('exportBtn').innerHTML;
-      document.getElementById('exportBtn').innerHTML = '<i class="fas fa-check"></i> Exported!';
-      setTimeout(() => {
-        document.getElementById('exportBtn').innerHTML = originalText;
-      }, 2000);
+      showSuccess('CSV file exported successfully!');
     }
 
-    function generateSurveyLink(row){
-      const receipt = row['Receipt No.'], sales = row['Sales Type'];
+    function generateSurveyLink(row) {
+      const receipt = row['Receipt No.'];
+      const sales = row['Sales Type'];
+      
+      if (!receipt || !sales) return null;
+      
       let SM = '', OI = '', OT = '';
       
-      if(receipt.startsWith('K281') && sales === 'TAKEAWAY') {
+      if (receipt.startsWith('K281') && sales === 'TAKEAWAY') {
         SM = '4.0'; OI = receipt.slice(-4); OT = '2';
-      } else if(receipt.startsWith('K281') && sales === 'DINE-IN') {
+      } else if (receipt.startsWith('K281') && sales === 'DINE-IN') {
         SM = '4.0'; OI = receipt.slice(-4); OT = '1';
-      } else if(receipt.startsWith('K281') && sales === 'DELIVERY') {
+      } else if (receipt.startsWith('K281') && sales === 'DELIVERY') {
         SM = '3.0'; OI = receipt; OT = '3';
       } else {
         return null;
@@ -823,7 +561,7 @@
       
       const D = convertExcelDate(row['Date']);
       const TM = convertExcelTime(row['Time']);
-      const PH = `91${row['Sell-to Contact No.']}`;
+      const PH = `91${row['Sell-to Contact No.'] || ''}`;
       const DTM = `${D}T${TM}Z`;
       
       const data = {
@@ -841,14 +579,14 @@
       return `https://customer.kfc-listens.com/jfe/form/SV_8bHC0noyvM3jPWC?Q_EED=${btoa(JSON.stringify(data))}`;
     }
 
-    function convertExcelDate(serial){
-      if(!serial || isNaN(serial)) return "";
+    function convertExcelDate(serial) {
+      if (!serial || isNaN(serial)) return "";
       const date = new Date((serial - 25569) * 86400 * 1000);
       return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     }
 
-    function convertExcelTime(serial){
-      if(!serial || isNaN(serial)) return "";
+    function convertExcelTime(serial) {
+      if (!serial || isNaN(serial)) return "";
       const totalMs = Math.round(serial * 24 * 60 * 60 * 1000);
       const h = String(Math.floor(totalMs / (60 * 60 * 1000))).padStart(2, '0');
       const m = String(Math.floor((totalMs % (60 * 60 * 1000)) / (60 * 1000))).padStart(2, '0');
