@@ -1,554 +1,363 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Survey Link Generator</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Link Generator</title>
+
+  <!-- Light / white background, simple clean style -->
   <style>
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
+    :root{
+      --page-bg: #ffffff;
+      --panel-bg: #ffffff;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --border: #e6e9ee;
+      --shadow: 0 6px 20px rgba(16,24,40,0.06);
+      --btn-bg: #2563eb;
+      --text: #0f172a;
     }
-    
-    .glass-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;background:var(--page-bg);color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+
+    .wrap{max-width:980px;margin:28px auto;padding:20px;display:grid;grid-template-columns:1fr;gap:18px}
+    header.app-header{display:flex;align-items:center;justify-content:space-between;padding:14px;border-radius:10px;background:linear-gradient(180deg, #ffffff, #fbfdff);border:1px solid var(--border);box-shadow:var(--shadow)}
+    header h1{margin:0;font-size:18px;font-weight:700}
+    header .sub{color:var(--muted);font-size:13px}
+
+    .panel{
+      background:var(--panel-bg);
+      border:1px solid var(--border);
+      padding:16px;border-radius:10px;box-shadow:var(--shadow)
     }
-    
-    .btn-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      transition: all 0.3s ease;
+
+    .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .file-input{display:none}
+    .file-pill{padding:9px 12px;border-radius:8px;border:1px dashed var(--border);background:#fbfdff;color:var(--muted);font-size:14px}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:600;font-size:14px;background:var(--btn-bg);color:#fff;transition:transform .12s ease, background .12s ease}
+    .btn.secondary{background:transparent;color:var(--muted);border:1px solid var(--border)}
+    .btn:active{transform:translateY(1px)}
+    .muted{color:var(--muted);font-size:13px}
+
+    .results{
+      background:var(--panel-bg);
+      padding:12px;border-radius:10px;border:1px solid var(--border);box-shadow:var(--shadow)
     }
-    
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-    }
-    
-    .btn-secondary {
-      background: #6c757d;
-      transition: all 0.3s ease;
-    }
-    
-    .btn-secondary:hover {
-      background: #5a6268;
-      transform: translateY(-1px);
-    }
-    
-    .file-upload-area {
-      transition: all 0.3s ease;
-      border: 2px dashed #dee2e6;
-    }
-    
-    .file-upload-area.dragover {
-      border-color: #667eea;
-      background: rgba(102, 126, 234, 0.05);
-    }
-    
-    .status-badge {
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-    
-    .status-ready {
-      background: #d1ecf1;
-      color: #0c5460;
-    }
-    
-    .status-copied {
-      background: #d4edda;
-      color: #155724;
-    }
-    
-    .progress-bar {
-      transition: width 0.5s ease-in-out;
-    }
-    
-    .table-row {
-      transition: all 0.2s ease;
-    }
-    
-    .table-row:hover {
-      background: #f8f9fa;
-    }
-    
-    .copied-row {
-      background: #f8fff9 !important;
-    }
-    
-    .success-message {
-      animation: fadeOut 2s ease-in-out 1s forwards;
-    }
-    
-    @keyframes fadeOut {
-      to { opacity: 0; transform: translateY(-10px); }
-    }
-    
-    /* Hidden textarea for copy fallback */
-    #copyHelper {
-      position: absolute;
-      left: -9999px;
-      opacity: 0;
+
+    .results-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .results-head h2{margin:0;font-size:16px}
+    .tag{background:#f1f5f9;color:var(--text);padding:6px 10px;border-radius:999px;font-weight:700;font-size:13px;border:1px solid var(--border)}
+
+    /* Table */
+    table{width:100%;border-collapse:collapse;background:transparent}
+    thead th{font-size:12px;color:var(--muted);text-transform:uppercase;text-align:left;padding:12px 10px;border-bottom:1px solid var(--border)}
+    tbody td{padding:12px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+    tbody tr:last-child td{border-bottom:0}
+    .receipt{font-weight:700;color:var(--text)}
+    .sales{color:var(--muted)}
+    .action{display:flex;gap:8px}
+    .action .copy-btn{padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--accent);cursor:pointer;font-weight:700}
+    .action .copy-btn.disabled{opacity:0.5;cursor:not-allowed;color:var(--muted)}
+    .small{font-size:13px;padding:8px 10px;border-radius:8px}
+
+    .empty{padding:28px;text-align:center;color:var(--muted)}
+    footer.app-foot{margin-top:8px;text-align:center;color:var(--muted);font-size:13px}
+
+    @media (max-width:720px){
+      .controls{flex-direction:column;align-items:stretch}
+      .btn{width:100%}
     }
   </style>
 </head>
-<body class="min-h-screen p-4 flex items-center justify-center">
-  <div class="w-full max-w-6xl">
-    
-    <!-- Header -->
-    <div class="text-center mb-8">
-      <h1 class="text-4xl font-bold text-white mb-2">Survey Link Generator</h1>
-      <p class="text-white text-opacity-90 text-lg">Create survey links from Excel data</p>
-      <div class="inline-block bg-white bg-opacity-20 px-4 py-2 rounded-full mt-3">
-        <span class="text-white font-medium">Store: Horamavu</span>
+<body>
+  <div class="wrap">
+    <header class="app-header">
+      <div>
+        <h1>Link Generator</h1>
+        <div class="sub">Generate survey links from Excel receipts</div>
       </div>
-    </div>
+      <div class="muted">Store • Horamavu</div>
+    </header>
 
-    <!-- Success Message -->
-    <div id="successMessage" class="hidden fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 success-message">
-      <i class="fas fa-check-circle mr-2"></i>
-      <span id="successText">Operation completed successfully!</span>
-    </div>
-
-    <!-- Error Message -->
-    <div id="errorMessage" class="hidden fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 success-message">
-      <i class="fas fa-exclamation-triangle mr-2"></i>
-      <span id="errorText">Operation failed!</span>
-    </div>
-
-    <!-- Hidden textarea for copy fallback -->
-    <textarea id="copyHelper"></textarea>
-
-    <!-- Main Card -->
-    <div class="glass-card rounded-2xl shadow-xl p-6 mb-6">
-      <div class="flex items-center mb-6">
-        <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center mr-3">
-          <i class="fas fa-file-excel text-white"></i>
-        </div>
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
         <div>
-          <h2 class="text-2xl font-bold text-gray-800">Upload Excel File</h2>
-          <p class="text-gray-600">Upload your sales data to generate survey links</p>
+          <div style="font-weight:700;margin-bottom:6px">Upload Excel</div>
+          <div class="muted" style="font-size:13px">Supports .xlsx and .xls</div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:8px;">
+          <label class="file-pill" title="Select file">
+            <input id="fileInput" class="file-input" type="file" accept=".xlsx,.xls" />
+            Choose file
+          </label>
+          <div id="fileName" class="muted">No file chosen</div>
         </div>
       </div>
 
-      <!-- File Upload -->
-      <div class="file-upload-area rounded-xl p-8 text-center cursor-pointer mb-6" id="fileUploadArea">
-        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
-        <p class="text-lg font-medium text-gray-700 mb-2">Drag & drop your Excel file here</p>
-        <p class="text-gray-500 mb-4">Supports .xlsx and .xls formats</p>
-        <input type="file" id="fileInput" accept=".xlsx, .xls" class="hidden">
-        <button onclick="document.getElementById('fileInput').click()" class="btn-secondary px-6 py-3 rounded-lg text-white font-medium">
-          <i class="fas fa-folder-open mr-2"></i> Choose File
-        </button>
-        <p id="fileName" class="text-sm text-gray-500 mt-3"></p>
+      <div style="margin-top:12px" class="controls">
+        <button id="generateBtn" class="btn" disabled>Generate</button>
+        <button id="copyAllBtn" class="btn secondary" disabled>Copy All</button>
+        <button id="exportBtn" class="btn secondary" disabled>Export CSV</button>
+        <button id="clearBtn" class="btn secondary">Clear</button>
       </div>
 
-      <!-- Progress Bar -->
-      <div class="mb-6">
-        <div class="flex justify-between text-sm text-gray-600 mb-2">
-          <span>Processing progress</span>
-          <span id="progressText">0%</span>
-        </div>
-        <div class="w-full bg-gray-200 rounded-full h-2">
-          <div id="progressBar" class="progress-bar h-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500" style="width: 0%"></div>
-        </div>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="flex flex-wrap gap-3">
-        <button id="generateBtn" onclick="processFile()" class="btn-primary px-6 py-3 rounded-lg text-white font-medium flex items-center" disabled>
-          <i class="fas fa-cogs mr-2"></i> Generate Links
-        </button>
-        <button onclick="clearData()" class="btn-secondary px-6 py-3 rounded-lg text-white font-medium flex items-center">
-          <i class="fas fa-eraser mr-2"></i> Clear All
-        </button>
-        <button id="copyAllBtn" onclick="copyAllLinks()" disabled class="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-lg text-white font-medium flex items-center transition-all">
-          <i class="fas fa-copy mr-2"></i> Copy All Links
-        </button>
-        <button id="exportBtn" onclick="exportToCSV()" disabled class="bg-teal-500 hover:bg-teal-600 px-6 py-3 rounded-lg text-white font-medium flex items-center transition-all">
-          <i class="fas fa-file-export mr-2"></i> Export CSV
-        </button>
-      </div>
-
-      <!-- Loading Indicator -->
-      <div id="loader" class="hidden mt-6 text-center">
-        <div class="inline-flex items-center">
-          <div class="w-4 h-4 bg-blue-500 rounded-full mr-2 animate-bounce"></div>
-          <div class="w-4 h-4 bg-blue-500 rounded-full mr-2 animate-bounce" style="animation-delay: 0.1s"></div>
-          <div class="w-4 h-4 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-        </div>
-        <p class="text-gray-600 mt-2">Processing your data...</p>
-      </div>
+      <div style="margin-top:12px" class="muted">Progress: <span id="progressText">Idle</span></div>
     </div>
 
-    <!-- Results Section -->
-    <div class="glass-card rounded-2xl shadow-xl p-6">
-      <div class="flex justify-between items-center mb-6">
-        <div class="flex items-center">
-          <div class="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mr-3">
-            <i class="fas fa-link text-white text-sm"></i>
-          </div>
-          <h2 class="text-2xl font-bold text-gray-800">Generated Links</h2>
-        </div>
-        <div id="resultsCount" class="bg-gradient-to-r from-green-400 to-blue-500 text-white px-4 py-2 rounded-full font-medium">
-          <i class="fas fa-hashtag mr-1"></i> <span>0</span> Links
-        </div>
+    <div class="results">
+      <div class="results-head">
+        <h2>Generated Links</h2>
+        <div id="resultsCount" class="tag">0 Links</div>
       </div>
 
-      <!-- Results Table -->
-      <div class="overflow-x-auto rounded-xl border border-gray-200">
-        <table class="w-full">
-          <thead class="bg-gray-50">
+      <!-- Table with headers: Order ID, Sales Type, Action -->
+      <div id="tableWrap">
+        <table aria-label="generated links table">
+          <thead>
             <tr>
-              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Receipt No.</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sales Type</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+              <th>Order ID</th>
+              <th>Sales Type</th>
+              <th>Action</th>
             </tr>
           </thead>
-          <tbody id="linkTableBody" class="bg-white divide-y divide-gray-200">
-            <!-- Rows will be inserted here by JavaScript -->
+          <tbody id="linkTableBody">
+            <!-- rows inserted here -->
           </tbody>
         </table>
-        
-        <!-- Empty State -->
-        <div id="emptyState" class="text-center py-12">
-          <i class="fas fa-inbox text-4xl text-gray-300 mb-4"></i>
-          <p class="text-gray-500">No data processed yet. Upload an Excel file to get started.</p>
-        </div>
+
+        <div id="emptyState" class="empty">No data processed yet. Upload an Excel file to get started.</div>
       </div>
     </div>
 
-    <!-- Footer -->
-    <div class="text-center mt-8 text-white text-opacity-70">
-      <p>Survey Link Generator • All systems operational</p>
-    </div>
+    <footer class="app-foot">Survey Link Generator • All systems operational</footer>
   </div>
 
-  <!-- XLSX Library -->
+  <!-- XLSX library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
   <script>
+    // show only Sales Type (no visible link), table headers: Order ID, Sales Type, Action, white background
     let currentData = [];
     let copiedLinks = new Set(JSON.parse(localStorage.getItem("copiedLinks") || "[]"));
     const storeID = "91KDIPL879-01";
 
-    // Initialize event listeners
-    document.addEventListener('DOMContentLoaded', function() {
-      // File input handling
-      document.getElementById('fileInput').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-          document.getElementById('fileName').textContent = `Selected: ${file.name}`;
-          document.getElementById('fileName').className = 'text-sm text-green-600 font-medium mt-3';
-          document.getElementById('generateBtn').disabled = false;
-          showSuccess('File selected successfully!');
-        }
-      });
+    const fileInput = document.getElementById('fileInput');
+    const fileNameEl = document.getElementById('fileName');
+    const generateBtn = document.getElementById('generateBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const copyAllBtn = document.getElementById('copyAllBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const progressText = document.getElementById('progressText');
+    const linkTableBody = document.getElementById('linkTableBody');
+    const emptyState = document.getElementById('emptyState');
+    const resultsCount = document.getElementById('resultsCount');
 
-      // Drag and drop functionality
-      const fileUploadArea = document.getElementById('fileUploadArea');
-      
-      fileUploadArea.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        fileUploadArea.classList.add('dragover');
-      });
-      
-      fileUploadArea.addEventListener('dragleave', function(e) {
-        e.preventDefault();
-        fileUploadArea.classList.remove('dragover');
-      });
-      
-      fileUploadArea.addEventListener('drop', function(e) {
-        e.preventDefault();
-        fileUploadArea.classList.remove('dragover');
-        const files = e.dataTransfer.files;
-        if (files.length > 0 && (files[0].name.endsWith('.xlsx') || files[0].name.endsWith('.xls'))) {
-          document.getElementById('fileInput').files = files;
-          document.getElementById('fileName').textContent = `Selected: ${files[0].name}`;
-          document.getElementById('fileName').className = 'text-sm text-green-600 font-medium mt-3';
-          document.getElementById('generateBtn').disabled = false;
-          showSuccess('File dropped successfully!');
-        } else {
-          showError('Please drop a valid Excel file (.xlsx or .xls)');
-        }
-      });
+    // file selection
+    fileInput.addEventListener('change', () => {
+      const f = fileInput.files[0];
+      if (f) {
+        fileNameEl.textContent = f.name;
+        generateBtn.disabled = false;
+        setProgress('File selected');
+      } else {
+        fileNameEl.textContent = 'No file chosen';
+        generateBtn.disabled = true;
+        setProgress('Idle');
+      }
     });
 
-    function showSuccess(message) {
-      const successDiv = document.getElementById('successMessage');
-      const successText = document.getElementById('successText');
-      
-      successText.textContent = message;
-      successDiv.classList.remove('hidden');
-      successDiv.style.opacity = '1';
-      successDiv.style.transform = 'translateY(0)';
-      
-      setTimeout(() => {
-        successDiv.classList.add('hidden');
-      }, 3000);
+    generateBtn.addEventListener('click', processFile);
+    clearBtn.addEventListener('click', clearData);
+    copyAllBtn.addEventListener('click', copyAllLinks);
+    exportBtn.addEventListener('click', exportToCSV);
+
+    function setProgress(text){
+      progressText.textContent = text;
     }
 
-    function showError(message) {
-      const errorDiv = document.getElementById('errorMessage');
-      const errorText = document.getElementById('errorText');
-      
-      errorText.textContent = message;
-      errorDiv.classList.remove('hidden');
-      errorDiv.style.opacity = '1';
-      errorDiv.style.transform = 'translateY(0)';
-      
-      setTimeout(() => {
-        errorDiv.classList.add('hidden');
-      }, 3000);
-    }
+    function processFile(){
+      const file = fileInput.files[0];
+      if (!file) { setProgress('Select an Excel file first'); return; }
 
-    function updateProgress(percentage, text) {
-      document.getElementById('progressBar').style.width = percentage + '%';
-      document.getElementById('progressText').textContent = text;
-    }
-
-    function processFile() {
-      const file = document.getElementById('fileInput').files[0];
-      if (!file) {
-        showError('Please select a file first');
-        return;
-      }
-
-      document.getElementById('loader').classList.remove('hidden');
-      document.getElementById('generateBtn').disabled = true;
-      updateProgress(30, 'Reading file...');
+      setProgress('Reading file...');
+      generateBtn.disabled = true;
 
       const reader = new FileReader();
-      reader.onload = function(e) {
-        updateProgress(60, 'Processing data...');
-        
+      reader.onload = function(e){
+        setProgress('Processing...');
         try {
           const data = new Uint8Array(e.target.result);
           const wb = XLSX.read(data, { type: 'array' });
           const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
-          
-          updateProgress(90, 'Generating links...');
-          
+
           currentData = rows.map(r => ({ ...r, link: generateSurveyLink(r) }));
           renderTable();
-          
-          document.getElementById('loader').classList.add('hidden');
-          updateProgress(100, 'Complete!');
-          
-          setTimeout(() => {
-            updateProgress(0, '0%');
-          }, 1000);
-          
-          showSuccess(`Successfully processed ${rows.length} records!`);
-        } catch (error) {
-          document.getElementById('loader').classList.add('hidden');
-          showError('Error processing file. Please check the format.');
-          console.error('Error:', error);
+
+          setProgress(`Processed ${rows.length} rows`);
+        } catch (err) {
+          console.error(err);
+          setProgress('Error processing file — check the format');
+        } finally {
+          generateBtn.disabled = false;
         }
       };
-      
-      reader.onerror = function() {
-        document.getElementById('loader').classList.add('hidden');
-        showError('Error reading file');
+
+      reader.onerror = function(){
+        setProgress('Failed to read file');
+        generateBtn.disabled = false;
       };
-      
+
       reader.readAsArrayBuffer(file);
     }
 
-    function renderTable() {
-      const tbody = document.getElementById('linkTableBody');
-      const emptyState = document.getElementById('emptyState');
-      
-      if (currentData.length === 0) {
-        tbody.innerHTML = '';
-        emptyState.classList.remove('hidden');
-        return;
+    function renderTable(){
+      linkTableBody.innerHTML = '';
+      const visible = currentData.filter(r => r.link);
+      if (visible.length === 0) {
+        emptyState.style.display = 'block';
+      } else {
+        emptyState.style.display = 'none';
       }
-      
-      emptyState.classList.add('hidden');
-      tbody.innerHTML = '';
-      
-      currentData.forEach((row, index) => {
-        if (row.link) {
-          const tr = document.createElement('tr');
-          tr.className = `table-row ${copiedLinks.has(row.link) ? 'copied-row' : ''}`;
-          
-          const isCopied = copiedLinks.has(row.link);
-          
-          tr.innerHTML = `
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="font-medium text-gray-900">${row['Receipt No.'] || 'N/A'}</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                row['Sales Type'] === 'DINE-IN' ? 'bg-blue-100 text-blue-800' :
-                row['Sales Type'] === 'TAKEAWAY' ? 'bg-green-100 text-green-800' :
-                'bg-purple-100 text-purple-800'
-              }">
-                ${row['Sales Type'] || 'N/A'}
-              </span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="status-badge ${isCopied ? 'status-copied' : 'status-ready'}">
-                <i class="fas ${isCopied ? 'fa-check' : 'fa-clock'} mr-1"></i>
-                ${isCopied ? 'Copied' : 'Ready'}
-              </span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <button onclick="copySingleLink('${row.link}', ${index})" 
-                class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                  isCopied ? 
-                  'bg-green-100 text-green-700 border border-green-200 cursor-default' :
-                  'bg-blue-500 text-white hover:bg-blue-600'
-                }" ${isCopied ? 'disabled' : ''}>
-                <i class="fas ${isCopied ? 'fa-check' : 'fa-copy'} mr-2"></i>
-                ${isCopied ? 'Copied' : 'Copy Link'}
-              </button>
-            </td>
-          `;
-          tbody.appendChild(tr);
-        }
-      });
-      
-      document.getElementById('copyAllBtn').disabled = false;
-      document.getElementById('exportBtn').disabled = false;
-      
-      // Update results count
-      const linkCount = currentData.filter(r => r.link).length;
-      document.getElementById('resultsCount').innerHTML = `<i class="fas fa-hashtag mr-1"></i> <span>${linkCount}</span> Links`;
-    }
 
-    function clearData() {
-      currentData = [];
-      document.getElementById('linkTableBody').innerHTML = '';
-      document.getElementById('emptyState').classList.remove('hidden');
-      document.getElementById('copyAllBtn').disabled = true;
-      document.getElementById('exportBtn').disabled = true;
-      document.getElementById('resultsCount').innerHTML = '<i class="fas fa-hashtag mr-1"></i> <span>0</span> Links';
-      document.getElementById('fileName').textContent = '';
-      document.getElementById('fileName').className = 'text-sm text-gray-500 mt-3';
-      document.getElementById('fileInput').value = '';
-      document.getElementById('generateBtn').disabled = true;
-      updateProgress(0, '0%');
-      showSuccess('Data cleared successfully!');
-    }
+      visible.forEach((row, index) => {
+        const tr = document.createElement('tr');
 
-    // Reliable copy function with fallback
-    function copyToClipboard(text) {
-      return new Promise((resolve, reject) => {
-        // Method 1: Modern clipboard API
-        if (navigator.clipboard && window.isSecureContext) {
-          navigator.clipboard.writeText(text).then(resolve).catch(() => {
-            // Fallback to method 2 if clipboard API fails
-            fallbackCopyText(text) ? resolve() : reject();
-          });
+        // Order ID column
+        const td1 = document.createElement('td');
+        td1.className = 'receipt';
+        td1.textContent = row['Receipt No.'] || 'N/A';
+        tr.appendChild(td1);
+
+        // Sales Type column (only type — no link preview)
+        const td2 = document.createElement('td');
+        td2.className = 'sales';
+        td2.textContent = row['Sales Type'] || 'N/A';
+        tr.appendChild(td2);
+
+        // Action column: copy button (copies the generated link to clipboard)
+        const td3 = document.createElement('td');
+        td3.className = 'action';
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-btn';
+        copyBtn.textContent = copiedLinks.has(row.link) ? 'Copied' : 'Copy';
+        if (copiedLinks.has(row.link)) {
+          copyBtn.classList.add('disabled');
+          copyBtn.disabled = true;
         } else {
-          // Method 2: Fallback for older browsers or insecure contexts
-          fallbackCopyText(text) ? resolve() : reject();
+          copyBtn.addEventListener('click', () => copySingleLink(row.link, copyBtn));
+        }
+        td3.appendChild(copyBtn);
+        tr.appendChild(td3);
+
+        linkTableBody.appendChild(tr);
+      });
+
+      // enable/disable bulk actions
+      const linkCount = visible.length;
+      resultsCount.textContent = `${linkCount} Links`;
+      copyAllBtn.disabled = linkCount === 0;
+      exportBtn.disabled = linkCount === 0;
+      copyAllBtn.classList.toggle('disabled', linkCount === 0);
+      emptyState.style.display = linkCount === 0 ? 'block' : 'none';
+    }
+
+    function clearData(){
+      currentData = [];
+      linkTableBody.innerHTML = '';
+      emptyState.style.display = 'block';
+      fileInput.value = '';
+      fileNameEl.textContent = 'No file chosen';
+      generateBtn.disabled = true;
+      copyAllBtn.disabled = true;
+      exportBtn.disabled = true;
+      resultsCount.textContent = '0 Links';
+      setProgress('Idle');
+    }
+
+    function copyToClipboard(text){
+      return new Promise((resolve,reject) => {
+        if (navigator.clipboard && window.isSecureContext){
+          navigator.clipboard.writeText(text).then(resolve).catch(() => fallbackCopy(text) ? resolve() : reject());
+        } else {
+          fallbackCopy(text) ? resolve() : reject();
         }
       });
     }
 
-    // Fallback copy method using textarea
-    function fallbackCopyText(text) {
+    function fallbackCopy(text){
       try {
-        const textArea = document.getElementById('copyHelper');
-        textArea.value = text;
-        textArea.style.display = 'block';
-        textArea.focus();
-        textArea.select();
-        
-        const successful = document.execCommand('copy');
-        textArea.style.display = 'none';
-        
-        return successful;
-      } catch (err) {
-        console.error('Fallback copy failed:', err);
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.focus(); ta.select();
+        const ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        return ok;
+      } catch(e) {
+        console.error('fallback copy failed', e);
         return false;
       }
     }
 
-    function copySingleLink(link, rowIndex) {
+    function copySingleLink(link, buttonEl){
       copyToClipboard(link).then(() => {
         copiedLinks.add(link);
-        localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks]));
-        
-        // Update the specific row
-        const rows = document.querySelectorAll('#linkTableBody tr');
-        if (rows[rowIndex]) {
-          const button = rows[rowIndex].querySelector('button');
-          const statusBadge = rows[rowIndex].querySelector('.status-badge');
-          
-          button.innerHTML = '<i class="fas fa-check mr-2"></i>Copied';
-          button.className = 'inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-green-100 text-green-700 border border-green-200 cursor-default';
-          button.disabled = true;
-          
-          statusBadge.innerHTML = '<i class="fas fa-check mr-1"></i>Copied';
-          statusBadge.className = 'status-badge status-copied';
-          
-          rows[rowIndex].classList.add('copied-row');
-        }
-        
-        showSuccess('Link copied to clipboard!');
+        localStorage.setItem('copiedLinks', JSON.stringify([...copiedLinks]));
+        buttonEl.textContent = 'Copied';
+        buttonEl.disabled = true;
+        buttonEl.classList.add('disabled');
+        setProgress('Link copied to clipboard');
       }).catch(err => {
-        console.error('Failed to copy: ', err);
-        showError('Failed to copy link. Please try again or copy manually.');
+        console.error(err);
+        setProgress('Copy failed — try manual copy');
       });
     }
 
-    function copyAllLinks() {
-      if (currentData.length === 0) {
-        showError('No links to copy');
-        return;
-      }
-      
-      const allLinks = currentData.map(r => r.link).filter(Boolean).join("\n");
-      copyToClipboard(allLinks).then(() => {
+    function copyAllLinks(){
+      const all = currentData.map(r => r.link).filter(Boolean).join("\n");
+      if (!all) { setProgress('No links to copy'); return; }
+
+      copyToClipboard(all).then(() => {
         currentData.forEach(r => r.link ? copiedLinks.add(r.link) : null);
-        localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks]));
+        localStorage.setItem('copiedLinks', JSON.stringify([...copiedLinks]));
         renderTable();
-        showSuccess('All links copied to clipboard!');
+        setProgress('All links copied to clipboard');
       }).catch(err => {
-        console.error('Failed to copy all links: ', err);
-        showError('Failed to copy links. Please try again or copy manually.');
+        console.error(err);
+        setProgress('Failed to copy all links');
       });
     }
 
-    function exportToCSV() {
+    function exportToCSV(){
       let csv = "Receipt No.,Sales Type,Generated Link\n";
       currentData.forEach(r => {
         if (r.link) {
-          csv += `"${r['Receipt No.'] || ''}","${r['Sales Type'] || ''}","${r.link}"\n`;
+          const rec = (r['Receipt No.']||'').toString().replace(/"/g,'""');
+          const sales = (r['Sales Type']||'').toString().replace(/"/g,'""');
+          csv += `"${rec}","${sales}","${r.link}"\n`;
         }
       });
-      
+
       const blob = new Blob([csv], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url;
-      a.download = "survey_links.csv";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      a.href = url; a.download = "survey_links.csv"; document.body.appendChild(a); a.click(); a.remove();
       URL.revokeObjectURL(url);
-      
-      showSuccess('CSV file exported successfully!');
+      setProgress('CSV exported');
     }
 
+    // Link generation logic (unchanged)
     function generateSurveyLink(row) {
       const receipt = row['Receipt No.'];
       const sales = row['Sales Type'];
-      
       if (!receipt || !sales) return null;
-      
+
       let SM = '', OI = '', OT = '';
-      
+
       if (receipt.startsWith('K281') && sales === 'TAKEAWAY') {
         SM = '4.0'; OI = receipt.slice(-4); OT = '2';
       } else if (receipt.startsWith('K281') && sales === 'DINE-IN') {
@@ -558,12 +367,12 @@
       } else {
         return null;
       }
-      
+
       const D = convertExcelDate(row['Date']);
       const TM = convertExcelTime(row['Time']);
       const PH = `91${row['Sell-to Contact No.'] || ''}`;
       const DTM = `${D}T${TM}Z`;
-      
+
       const data = {
         "S": storeID,
         "OI": OI,
@@ -575,7 +384,7 @@
         "SM": SM,
         "PH": PH
       };
-      
+
       return `https://customer.kfc-listens.com/jfe/form/SV_8bHC0noyvM3jPWC?Q_EED=${btoa(JSON.stringify(data))}`;
     }
 
@@ -593,6 +402,16 @@
       const s = String(Math.floor((totalMs % (60 * 1000)) / 1000)).padStart(2, '0');
       return `${h}:${m}:${s}`;
     }
+
+    // init
+    (function init(){
+      emptyState.style.display = 'block';
+      setProgress('Idle');
+      if (currentData.length === 0) {
+        copyAllBtn.disabled = true;
+        exportBtn.disabled = true;
+      }
+    })();
   </script>
 </body>
 </html>
