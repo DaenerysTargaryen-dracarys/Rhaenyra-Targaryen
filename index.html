@@ -1,570 +1,642 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Survey Link Generator</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Survey Link Generator</title>
+<style>
     body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
+        font-family: 'Comic Sans MS', 'Marker Felt', 'Arial Rounded MT Bold', sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #e6f2ff;
+        background-image: radial-gradient(#b3d9ff 15%, transparent 16%),
+                          radial-gradient(#b3d9ff 15%, transparent 16%);
+        background-size: 40px 40px;
+        background-position: 0 0, 20px 20px;
+        color: #333;
     }
-    
-    .glass-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 8px 8px 0 #333, 15px 15px 0 #ffcc00;
+        border: 4px solid #333;
+        position: relative;
+        overflow: hidden;
     }
-    
-    .btn-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      transition: all 0.3s ease;
+    .container:before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        border: 3px dashed #ff6600;
+        border-radius: 20px;
+        pointer-events: none;
+        z-index: -1;
     }
-    
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    h1 {
+        text-align: center;
+        font-size: 36px;
+        margin-bottom: 25px;
+        color: #ff3300;
+        text-shadow: 3px 3px 0 #ffcc00, 6px 6px 0 rgba(0,0,0,0.2);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        position: relative;
+        display: inline-block;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 30px;
+        background: white;
+        border: 4px solid #333;
+        border-radius: 15px;
+        box-shadow: 5px 5px 0 #333;
     }
-    
-    .btn-secondary {
-      background: #6c757d;
-      transition: all 0.3s ease;
+    h1:after {
+        content: "!!!";
+        position: absolute;
+        top: -20px;
+        right: -20px;
+        background: #ffcc00;
+        color: #ff3300;
+        font-size: 24px;
+        padding: 5px 10px;
+        border-radius: 50%;
+        border: 3px solid #333;
+        transform: rotate(15deg);
+        animation: bounce 1s infinite alternate;
     }
-    
-    .btn-secondary:hover {
-      background: #5a6268;
-      transform: translateY(-1px);
+    @keyframes bounce {
+        from { transform: rotate(15deg) scale(1); }
+        to { transform: rotate(15deg) scale(1.1); }
     }
-    
-    .file-upload-area {
-      transition: all 0.3s ease;
-      border: 2px dashed #dee2e6;
+    .file-section {
+        text-align: center;
+        margin: 25px 0;
+        padding: 25px;
+        border: 4px dashed #ff6600;
+        border-radius: 15px;
+        background-color: #fff9e6;
+        position: relative;
+        min-height: 120px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
-    
-    .file-upload-area.dragover {
-      border-color: #667eea;
-      background: rgba(102, 126, 234, 0.05);
+    .file-section:before {
+        content: "📁";
+        position: absolute;
+        top: -20px;
+        left: 20px;
+        font-size: 40px;
+        background: white;
+        padding: 5px;
+        border: 3px solid #333;
+        border-radius: 10px;
+        transform: rotate(-10deg);
     }
-    
-    .progress-bar {
-      transition: width 0.5s ease-in-out;
+    .file-input-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        width: 100%;
+        max-width: 400px;
     }
-    
-    .table-row {
-      transition: all 0.2s ease;
+    .file-label {
+        font-weight: bold;
+        font-size: 18px;
+        color: #333;
+        background: #ffcc00;
+        padding: 8px 15px;
+        border-radius: 8px;
+        border: 2px solid #333;
+        box-shadow: 3px 3px 0 #333;
+        cursor: pointer;
+        transition: all 0.2s;
     }
-    
-    .table-row:hover {
-      background: #f8f9fa;
+    .file-label:hover {
+        transform: translateY(-2px);
+        box-shadow: 4px 4px 0 #333;
     }
-    
-    .copied-row {
-      background: #f8fff9 !important;
+    input[type="file"] {
+        display: none;
     }
-    
-    .success-message {
-      animation: fadeOut 2s ease-in-out 1s forwards;
+    .file-name {
+        font-size: 16px;
+        color: #666;
+        background: white;
+        padding: 8px 15px;
+        border-radius: 8px;
+        border: 2px solid #3399ff;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
-    
-    @keyframes fadeOut {
-      to { opacity: 0; transform: translateY(-10px); }
+    .button-group {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin: 25px 0;
+        flex-wrap: wrap;
     }
-    
-    /* Hidden textarea for copy fallback */
-    #copyHelper {
-      position: absolute;
-      left: -9999px;
-      opacity: 0;
+    .btn {
+        padding: 12px 25px;
+        border: 3px solid #333;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: bold;
+        font-family: 'Comic Sans MS', sans-serif;
+        transition: all 0.2s;
+        position: relative;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 4px 4px 0 #333;
     }
-  </style>
+    .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 6px 6px 0 #333;
+    }
+    .btn:active {
+        transform: translateY(1px);
+        box-shadow: 2px 2px 0 #333;
+    }
+    .btn-primary { 
+        background-color: #3399ff; 
+        color: white; 
+    }
+    .btn-primary:hover { 
+        background-color: #0077e6; 
+    }
+    .btn-success { 
+        background-color: #33cc33; 
+        color: white; 
+    }
+    .btn-success:hover { 
+        background-color: #29a329; 
+    }
+    .btn-warning { 
+        background-color: #ffcc00; 
+        color: #333; 
+    }
+    .btn-warning:hover { 
+        background-color: #e6b800; 
+    }
+    .btn:disabled { 
+        background-color: #cccccc; 
+        color: #999;
+        cursor: not-allowed; 
+        box-shadow: 2px 2px 0 #999;
+        border-color: #999;
+    }
+    .btn:disabled:hover {
+        transform: none;
+        box-shadow: 2px 2px 0 #999;
+    }
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-top: 25px;
+        border: 4px solid #333;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 5px 5px 0 #333;
+        background: white;
+    }
+    th, td {
+        border-bottom: 3px solid #333;
+        border-right: 3px solid #333;
+        padding: 12px;
+        text-align: left;
+        vertical-align: middle;
+    }
+    th {
+        background-color: #ff6600;
+        color: white;
+        position: sticky;
+        top: 0;
+        font-size: 18px;
+        text-transform: uppercase;
+        text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+    }
+    th:last-child, td:last-child {
+        border-right: none;
+    }
+    tr:last-child td {
+        border-bottom: none;
+    }
+    tr:nth-child(even) { 
+        background-color: #fff0e6; 
+    }
+    tr:nth-child(odd) { 
+        background-color: white; 
+    }
+    .copy-btn {
+        background-color: #33cc99;
+        color: white;
+        border: 2px solid #333;
+        padding: 8px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: bold;
+        font-family: 'Comic Sans MS', sans-serif;
+        white-space: nowrap;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 2px 2px 0 #333;
+        transition: all 0.2s;
+    }
+    .copy-btn:hover { 
+        background-color: #29a37a; 
+        transform: translateY(-2px);
+        box-shadow: 3px 3px 0 #333;
+    }
+    .copy-btn:active {
+        transform: translateY(1px);
+        box-shadow: 1px 1px 0 #333;
+    }
+    .copy-btn.copied {
+        background-color: #ff3333 !important;
+        cursor: not-allowed;
+        animation: wiggle 0.5s;
+    }
+    .copy-btn:disabled {
+        background-color: #999999 !important;
+        color: #666;
+        cursor: not-allowed;
+        box-shadow: 1px 1px 0 #666;
+        border-color: #666;
+        transform: none;
+    }
+    @keyframes wiggle {
+        0%, 100% { transform: rotate(0); }
+        25% { transform: rotate(-5deg); }
+        75% { transform: rotate(5deg); }
+    }
+    /* Hide Survey Model and Generated Link columns visually */
+    th:nth-child(3), td:nth-child(3),
+    th:nth-child(4), td:nth-child(4) {
+        display: none;
+    }
+    .status {
+        text-align: center;
+        margin: 25px 0;
+        padding: 15px;
+        border-radius: 10px;
+        border: 3px solid;
+        font-weight: bold;
+        font-size: 18px;
+        box-shadow: 3px 3px 0 #333;
+    }
+    .status.success { 
+        background-color: #ccffcc; 
+        color: #006600; 
+        border-color: #33cc33;
+    }
+    .status.error { 
+        background-color: #ffcccc; 
+        color: #cc0000; 
+        border-color: #ff3333;
+    }
+    .table-container {
+        max-height: 600px;
+        overflow-y: auto;
+        border: 4px solid #333;
+        border-radius: 15px;
+        box-shadow: 5px 5px 0 #333;
+        background: white;
+    }
+    .comic-dots {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: #ffcc00;
+        border: 3px solid #333;
+        border-radius: 50%;
+    }
+    .dot-1 { top: 20px; left: 20px; }
+    .dot-2 { top: 20px; right: 20px; }
+    .dot-3 { bottom: 20px; left: 20px; }
+    .dot-4 { bottom: 20px; right: 20px; }
+    .speech-bubble {
+        position: absolute;
+        bottom: -40px;
+        right: 30px;
+        background: white;
+        border: 3px solid #333;
+        border-radius: 20px;
+        padding: 10px 15px;
+        font-weight: bold;
+        box-shadow: 3px 3px 0 #333;
+        transform: rotate(-5deg);
+        animation: float 3s infinite ease-in-out;
+    }
+    .speech-bubble:after {
+        content: "";
+        position: absolute;
+        bottom: -15px;
+        right: 30px;
+        border-width: 15px 10px 0;
+        border-style: solid;
+        border-color: white transparent;
+        display: block;
+        width: 0;
+    }
+    .speech-bubble:before {
+        content: "";
+        position: absolute;
+        bottom: -18px;
+        right: 29px;
+        border-width: 16px 11px 0;
+        border-style: solid;
+        border-color: #333 transparent;
+        display: block;
+        width: 0;
+    }
+    @keyframes float {
+        0%, 100% { transform: rotate(-5deg) translateY(0); }
+        50% { transform: rotate(-5deg) translateY(-5px); }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .container {
+            padding: 15px;
+        }
+        h1 {
+            font-size: 28px;
+            padding: 8px 20px;
+        }
+        .file-section {
+            padding: 20px 15px;
+        }
+        .button-group {
+            flex-direction: column;
+            align-items: center;
+        }
+        .btn {
+            width: 100%;
+            max-width: 300px;
+        }
+        table {
+            font-size: 14px;
+        }
+        th, td {
+            padding: 8px;
+        }
+    }
+</style>
 </head>
-<body class="min-h-screen p-4 flex items-center justify-center">
-  <div class="w-full max-w-6xl">
+<body>
+<div class="container">
+    <div class="comic-dots dot-1"></div>
+    <div class="comic-dots dot-2"></div>
+    <div class="comic-dots dot-3"></div>
+    <div class="comic-dots dot-4"></div>
     
-    <!-- Header -->
-    <div class="text-center mb-8">
-      <h1 class="text-4xl font-bold text-white mb-2">Survey Link Generator</h1>
-      <p class="text-white text-opacity-90 text-lg">Create survey links from Excel data</p>
-      <div class="inline-block bg-white bg-opacity-20 px-4 py-2 rounded-full mt-3">
-        <span class="text-white font-medium">Store: Horamavu</span>
-      </div>
+    <h1>Survey Link Generator</h1>
+    
+    <div class="file-section">
+        <div class="file-input-container">
+            <label for="fileInput" class="file-label">📁 CHOOSE EXCEL FILE</label>
+            <input type="file" id="fileInput" accept=".xlsx, .xls">
+            <div class="file-name" id="fileName">No file chosen</div>
+        </div>
+        <div class="button-group">
+            <button class="btn btn-primary" id="generateBtn" onclick="processFile()" disabled>Generate Links</button>
+            <button class="btn btn-warning" onclick="clearData()">Clear All</button>
+        </div>
     </div>
-
-    <!-- Success Message -->
-    <div id="successMessage" class="hidden fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 success-message">
-      <i class="fas fa-check-circle mr-2"></i>
-      <span id="successText">Operation completed successfully!</span>
+    
+    <div id="status" class="status" style="display: none;"></div>
+    
+    <div class="button-group">
+        <button class="btn btn-success" id="copyAllBtn" onclick="copyAllLinks()" disabled>Copy All Links</button>
+        <button class="btn btn-primary" onclick="exportToCSV()" id="exportBtn" disabled>Export to CSV</button>
+        <div class="speech-bubble">Click me!</div>
     </div>
-
-    <!-- Error Message -->
-    <div id="errorMessage" class="hidden fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 success-message">
-      <i class="fas fa-exclamation-triangle mr-2"></i>
-      <span id="errorText">Operation failed!</span>
-    </div>
-
-    <!-- Hidden textarea for copy fallback -->
-    <textarea id="copyHelper"></textarea>
-
-    <!-- Main Card -->
-    <div class="glass-card rounded-2xl shadow-xl p-6 mb-6">
-      <div class="flex items-center mb-6">
-        <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center mr-3">
-          <i class="fas fa-file-excel text-white"></i>
-        </div>
-        <div>
-          <h2 class="text-2xl font-bold text-gray-800">Upload Excel File</h2>
-          <p class="text-gray-600">Upload your sales data to generate survey links</p>
-        </div>
-      </div>
-
-      <!-- File Upload -->
-      <div class="file-upload-area rounded-xl p-8 text-center cursor-pointer mb-6" id="fileUploadArea">
-        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
-        <p class="text-lg font-medium text-gray-700 mb-2">Drag & drop your Excel file here</p>
-        <p class="text-gray-500 mb-4">Supports .xlsx and .xls formats</p>
-        <input type="file" id="fileInput" accept=".xlsx, .xls" class="hidden">
-        <button onclick="document.getElementById('fileInput').click()" class="btn-secondary px-6 py-3 rounded-lg text-white font-medium">
-          <i class="fas fa-folder-open mr-2"></i> Choose File
-        </button>
-        <p id="fileName" class="text-sm text-gray-500 mt-3"></p>
-      </div>
-
-      <!-- Progress Bar -->
-      <div class="mb-6">
-        <div class="flex justify-between text-sm text-gray-600 mb-2">
-          <span>Processing progress</span>
-          <span id="progressText">0%</span>
-        </div>
-        <div class="w-full bg-gray-200 rounded-full h-2">
-          <div id="progressBar" class="progress-bar h-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500" style="width: 0%"></div>
-        </div>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="flex flex-wrap gap-3">
-        <button id="generateBtn" onclick="processFile()" class="btn-primary px-6 py-3 rounded-lg text-white font-medium flex items-center" disabled>
-          <i class="fas fa-cogs mr-2"></i> Generate Links
-        </button>
-        <button onclick="clearData()" class="btn-secondary px-6 py-3 rounded-lg text-white font-medium flex items-center">
-          <i class="fas fa-eraser mr-2"></i> Clear All
-        </button>
-        <button id="copyAllBtn" onclick="copyAllLinks()" disabled class="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-lg text-white font-medium flex items-center transition-all">
-          <i class="fas fa-copy mr-2"></i> Copy All Links
-        </button>
-        <button id="exportBtn" onclick="exportToCSV()" disabled class="bg-teal-500 hover:bg-teal-600 px-6 py-3 rounded-lg text-white font-medium flex items-center transition-all">
-          <i class="fas fa-file-export mr-2"></i> Export CSV
-        </button>
-      </div>
-
-      <!-- Loading Indicator -->
-      <div id="loader" class="hidden mt-6 text-center">
-        <div class="inline-flex items-center">
-          <div class="w-4 h-4 bg-blue-500 rounded-full mr-2 animate-bounce"></div>
-          <div class="w-4 h-4 bg-blue-500 rounded-full mr-2 animate-bounce" style="animation-delay: 0.1s"></div>
-          <div class="w-4 h-4 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-        </div>
-        <p class="text-gray-600 mt-2">Processing your data...</p>
-      </div>
-    </div>
-
-    <!-- Results Section -->
-    <div class="glass-card rounded-2xl shadow-xl p-6">
-      <div class="flex justify-between items-center mb-6">
-        <div class="flex items-center">
-          <div class="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mr-3">
-            <i class="fas fa-link text-white text-sm"></i>
-          </div>
-          <h2 class="text-2xl font-bold text-gray-800">Generated Links</h2>
-        </div>
-        <div id="resultsCount" class="bg-gradient-to-r from-green-400 to-blue-500 text-white px-4 py-2 rounded-full font-medium">
-          <i class="fas fa-hashtag mr-1"></i> <span>0</span> Links
-        </div>
-      </div>
-
-      <!-- Results Table -->
-      <div class="overflow-x-auto rounded-xl border border-gray-200">
-        <table class="w-full">
-          <thead class="bg-gray-50">
-            <tr>
-              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Receipt No.</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sales Type</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-            </tr>
-          </thead>
-          <tbody id="linkTableBody" class="bg-white divide-y divide-gray-200">
-            <!-- Rows will be inserted here by JavaScript -->
-          </tbody>
+    
+    <div class="table-container">
+        <table id="linkTable">
+            <thead>
+                <tr>
+                    <th>Receipt No.</th>
+                    <th>Sales Type</th>
+                    <th>Survey Model</th>
+                    <th>Generated Link</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
         </table>
-        
-        <!-- Empty State -->
-        <div id="emptyState" class="text-center py-12">
-          <i class="fas fa-inbox text-4xl text-gray-300 mb-4"></i>
-          <p class="text-gray-500">No data processed yet. Upload an Excel file to get started.</p>
-        </div>
-      </div>
     </div>
+</div>
 
-    <!-- Footer -->
-    <div class="text-center mt-8 text-white text-opacity-70">
-      <p>Survey Link Generator • All systems operational</p>
-    </div>
-  </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+let currentData = [];
+const storeID = "91KDIPL879-01"; // Store Code
 
-  <!-- XLSX Library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script>
-    let currentData = [];
-    let copiedLinks = new Set(JSON.parse(localStorage.getItem("copiedLinks") || "[]"));
-    const storeID = "91KDIPL879-01";
+// Excel date/time converters
+function convertExcelDate(serial) {
+    const date = new Date((serial - 25569) * 86400 * 1000);
+    return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+}
+function convertExcelTime(serial) {
+    const totalMilliseconds = Math.round(serial * 24 * 60 * 60 * 1000);
+    const hours = String(Math.floor(totalMilliseconds / (60 * 60 * 1000))).padStart(2,'0');
+    const minutes = String(Math.floor((totalMilliseconds % (60 * 60 * 1000)) / (60 * 1000))).padStart(2,'0');
+    const seconds = String(Math.floor((totalMilliseconds % (60 * 1000)) / 1000)).padStart(2,'0');
+    const milliseconds = String(totalMilliseconds % 1000).padStart(3,'0');
+    return `${hours}:${minutes}:${seconds}.${milliseconds}`;
+}
 
-    // Initialize event listeners
-    document.addEventListener('DOMContentLoaded', function() {
-      // File input handling
-      document.getElementById('fileInput').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-          document.getElementById('fileName').textContent = `Selected: ${file.name}`;
-          document.getElementById('fileName').className = 'text-sm text-green-600 font-medium mt-3';
-          document.getElementById('generateBtn').disabled = false;
-          showSuccess('File selected successfully!');
-        }
-      });
+// Generate link
+function generateSurveyLink(row) {
+    const receiptNo = row['Receipt No.'];
+    const salesType = row['Sales Type'];
+    let surveyModel = '', orderID = '', numericOT = '';
 
-      // Drag and drop functionality
-      const fileUploadArea = document.getElementById('fileUploadArea');
-      
-      fileUploadArea.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        fileUploadArea.classList.add('dragover');
-      });
-      
-      fileUploadArea.addEventListener('dragleave', function(e) {
-        e.preventDefault();
-        fileUploadArea.classList.remove('dragover');
-      });
-      
-      fileUploadArea.addEventListener('drop', function(e) {
-        e.preventDefault();
-        fileUploadArea.classList.remove('dragover');
-        const files = e.dataTransfer.files;
-        if (files.length > 0 && (files[0].name.endsWith('.xlsx') || files[0].name.endsWith('.xls'))) {
-          document.getElementById('fileInput').files = files;
-          document.getElementById('fileName').textContent = `Selected: ${files[0].name}`;
-          document.getElementById('fileName').className = 'text-sm text-green-600 font-medium mt-3';
-          document.getElementById('generateBtn').disabled = false;
-          showSuccess('File dropped successfully!');
-        } else {
-          showError('Please drop a valid Excel file (.xlsx or .xls)');
-        }
-      });
-    });
+    if (/^\d+$/.test(receiptNo) && salesType === 'TAKEAWAY') { surveyModel = '6.0'; orderID = receiptNo; numericOT = '2'; }
+    else if (/^\d+$/.test(receiptNo) && salesType === 'DINE-IN') { surveyModel = '6.0'; orderID = receiptNo; numericOT = '1'; }
+    else if (receiptNo.startsWith('K281') && salesType === 'TAKEAWAY') { surveyModel = '4.0'; orderID = receiptNo.slice(-4); numericOT = '2'; }
+    else if (receiptNo.startsWith('K281') && salesType === 'DINE-IN') { surveyModel = '4.0'; orderID = receiptNo.slice(-4); numericOT = '1'; }
+    else if (receiptNo.startsWith('K281') && salesType === 'DELIVERY') { surveyModel = '3.0'; orderID = receiptNo; numericOT = '3'; }
+    else { return null; }
 
-    function showSuccess(message) {
-      const successDiv = document.getElementById('successMessage');
-      const successText = document.getElementById('successText');
-      
-      successText.textContent = message;
-      successDiv.classList.remove('hidden');
-      successDiv.style.opacity = '1';
-      successDiv.style.transform = 'translateY(0)';
-      
-      setTimeout(() => {
-        successDiv.classList.add('hidden');
-      }, 3000);
-    }
+    const date = convertExcelDate(row['Date']);
+    const time = convertExcelTime(row['Time']);
+    const phoneNumber = `91${row['Sell-to Contact No.']}`;
+    const isoDateTime = `${date}T${time}Z`;
 
-    function showError(message) {
-      const errorDiv = document.getElementById('errorMessage');
-      const errorText = document.getElementById('errorText');
-      
-      errorText.textContent = message;
-      errorDiv.classList.remove('hidden');
-      errorDiv.style.opacity = '1';
-      errorDiv.style.transform = 'translateY(0)';
-      
-      setTimeout(() => {
-        errorDiv.classList.add('hidden');
-      }, 3000);
-    }
+    const data = { "S": storeID, "OI": orderID, "D": date, "TM": time, "DTM": isoDateTime, "TI": orderID, "OT": numericOT, "SM": surveyModel, "PH": phoneNumber };
+    const encodedData = btoa(JSON.stringify(data));
+    return `https://customer.kfc-listens.com/jfe/form/SV_8bHC0noyvM3jPWC?Q_EED=${encodedData}`;
+}
 
-    function updateProgress(percentage, text) {
-      document.getElementById('progressBar').style.width = percentage + '%';
-      document.getElementById('progressText').textContent = text;
-    }
+// File processing
+function processFile() {
+    const file = document.getElementById('fileInput').files[0];
+    if (!file) return showStatus('Please select a file first', 'error');
+    showStatus('Processing file...', 'success');
 
-    function processFile() {
-      const file = document.getElementById('fileInput').files[0];
-      if (!file) {
-        showError('Please select a file first');
-        return;
-      }
-
-      document.getElementById('loader').classList.remove('hidden');
-      document.getElementById('generateBtn').disabled = true;
-      updateProgress(30, 'Reading file...');
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        updateProgress(60, 'Processing data...');
-        
+    const reader = new FileReader();
+    reader.onload = function(e) {
         try {
-          const data = new Uint8Array(e.target.result);
-          const wb = XLSX.read(data, { type: 'array' });
-          const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
-          
-          updateProgress(90, 'Generating links...');
-          
-          currentData = rows.map(r => ({ ...r, link: generateSurveyLink(r) }));
-          renderTable();
-          
-          document.getElementById('loader').classList.add('hidden');
-          updateProgress(100, 'Complete!');
-          
-          setTimeout(() => {
-            updateProgress(0, '0%');
-          }, 1000);
-          
-          showSuccess(`Successfully processed ${rows.length} records!`);
-        } catch (error) {
-          document.getElementById('loader').classList.add('hidden');
-          showError('Error processing file. Please check the format.');
-          console.error('Error:', error);
-        }
-      };
-      
-      reader.onerror = function() {
-        document.getElementById('loader').classList.add('hidden');
-        showError('Error reading file');
-      };
-      
-      reader.readAsArrayBuffer(file);
-    }
+            const workbook = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+            const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+            const filteredData = sheetData.filter(row => !(row['POS Receipt No.']||'').match(/K281SWG|K281ZMT|K281MAGIC/));
 
-    function renderTable() {
-      const tbody = document.getElementById('linkTableBody');
-      const emptyState = document.getElementById('emptyState');
-      
-      if (currentData.length === 0) {
-        tbody.innerHTML = '';
-        emptyState.classList.remove('hidden');
+            currentData = [];
+            const tbody = document.querySelector('#linkTable tbody');
+            tbody.innerHTML = '';
+
+            let processedCount = 0;
+            filteredData.forEach((row, index) => {
+                const link = generateSurveyLink(row);
+                if (link) {
+                    processedCount++;
+                    const linkData = {
+                        receiptNo: row['Receipt No.'],
+                        salesType: row['Sales Type'],
+                        surveyModel: link.includes('SM=6.0') ? '6.0' : link.includes('SM=4.0') ? '4.0' : link.includes('SM=3.0') ? '3.0' : 'Unknown',
+                        link: link,
+                        copied: false // Track if this link has been copied
+                    };
+                    currentData.push(linkData);
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${linkData.receiptNo}</td>
+                        <td>${linkData.salesType}</td>
+                        <td>${linkData.surveyModel}</td>
+                        <td>${linkData.link}</td>
+                        <td><button class="copy-btn" data-index="${currentData.length - 1}">Copy</button></td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            });
+
+            // Add event listeners to all copy buttons
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    copyIndividualLink(index, this);
+                });
+            });
+
+            showStatus(`Processed ${processedCount} records`, 'success');
+            document.getElementById('copyAllBtn').disabled = false;
+            document.getElementById('exportBtn').disabled = false;
+        } catch (err) {
+            showStatus('Error: ' + err.message, 'error');
+        }
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+// Copy individual link
+function copyIndividualLink(index, button) {
+    const linkData = currentData[index];
+    
+    // If already copied, do nothing
+    if (linkData.copied) {
         return;
-      }
-      
-      emptyState.classList.add('hidden');
-      tbody.innerHTML = '';
-      
-      currentData.forEach((row, index) => {
-        if (row.link) {
-          const tr = document.createElement('tr');
-          tr.className = `table-row ${copiedLinks.has(row.link) ? 'copied-row' : ''}`;
-          
-          const isCopied = copiedLinks.has(row.link);
-          
-          tr.innerHTML = `
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="font-medium text-gray-900">${row['Receipt No.'] || 'N/A'}</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                row['Sales Type'] === 'DINE-IN' ? 'bg-blue-100 text-blue-800' :
-                row['Sales Type'] === 'TAKEAWAY' ? 'bg-green-100 text-green-800' :
-                'bg-purple-100 text-purple-800'
-              }">
-                ${row['Sales Type'] || 'N/A'}
-              </span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <button onclick="copySingleLink('${row.link}', ${index})" 
-                class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                  isCopied ? 
-                  'bg-green-100 text-green-700 border border-green-200 cursor-default' :
-                  'bg-blue-500 text-white hover:bg-blue-600'
-                }" ${isCopied ? 'disabled' : ''}>
-                <i class="fas ${isCopied ? 'fa-check' : 'fa-copy'} mr-2"></i>
-                ${isCopied ? 'Copied' : 'Copy Link'}
-              </button>
-            </td>
-          `;
-          tbody.appendChild(tr);
-        }
-      });
-      
-      document.getElementById('copyAllBtn').disabled = false;
-      document.getElementById('exportBtn').disabled = false;
-      
-      // Update results count
-      const linkCount = currentData.filter(r => r.link).length;
-      document.getElementById('resultsCount').innerHTML = `<i class="fas fa-hashtag mr-1"></i> <span>${linkCount}</span> Links`;
     }
-
-    function clearData() {
-      currentData = [];
-      document.getElementById('linkTableBody').innerHTML = '';
-      document.getElementById('emptyState').classList.remove('hidden');
-      document.getElementById('copyAllBtn').disabled = true;
-      document.getElementById('exportBtn').disabled = true;
-      document.getElementById('resultsCount').innerHTML = '<i class="fas fa-hashtag mr-1"></i> <span>0</span> Links';
-      document.getElementById('fileName').textContent = '';
-      document.getElementById('fileName').className = 'text-sm text-gray-500 mt-3';
-      document.getElementById('fileInput').value = '';
-      document.getElementById('generateBtn').disabled = true;
-      updateProgress(0, '0%');
-      showSuccess('Data cleared successfully!');
-    }
-
-    // Reliable copy function with fallback
-    function copyToClipboard(text) {
-      return new Promise((resolve, reject) => {
-        // Method 1: Modern clipboard API
-        if (navigator.clipboard && window.isSecureContext) {
-          navigator.clipboard.writeText(text).then(resolve).catch(() => {
-            // Fallback to method 2 if clipboard API fails
-            fallbackCopyText(text) ? resolve() : reject();
-          });
-        } else {
-          // Method 2: Fallback for older browsers or insecure contexts
-          fallbackCopyText(text) ? resolve() : reject();
-        }
-      });
-    }
-
-    // Fallback copy method using textarea
-    function fallbackCopyText(text) {
-      try {
-        const textArea = document.getElementById('copyHelper');
-        textArea.value = text;
-        textArea.style.display = 'block';
-        textArea.focus();
-        textArea.select();
-        
+    
+    const link = linkData.link;
+    
+    // Create a temporary textarea element
+    const textArea = document.createElement("textarea");
+    textArea.value = link;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    textArea.style.top = "-999999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
         const successful = document.execCommand('copy');
-        textArea.style.display = 'none';
-        
-        return successful;
-      } catch (err) {
-        console.error('Fallback copy failed:', err);
-        return false;
-      }
-    }
-
-    function copySingleLink(link, rowIndex) {
-      copyToClipboard(link).then(() => {
-        copiedLinks.add(link);
-        localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks]));
-        
-        // Update the specific row
-        const rows = document.querySelectorAll('#linkTableBody tr');
-        if (rows[rowIndex]) {
-          const button = rows[rowIndex].querySelector('button');
-          
-          button.innerHTML = '<i class="fas fa-check mr-2"></i>Copied';
-          button.className = 'inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-green-100 text-green-700 border border-green-200 cursor-default';
-          button.disabled = true;
-          
-          rows[rowIndex].classList.add('copied-row');
+        if (successful) {
+            // Mark as copied and disable the button
+            linkData.copied = true;
+            button.textContent = 'Copied!';
+            button.classList.add('copied');
+            button.disabled = true;
+            
+            showStatus('Link copied to clipboard!', 'success');
+        } else {
+            showStatus('Failed to copy link', 'error');
         }
-        
-        showSuccess('Link copied to clipboard!');
-      }).catch(err => {
-        console.error('Failed to copy: ', err);
-        showError('Failed to copy link. Please try again or copy manually.');
-      });
+    } catch (err) {
+        console.error('Fallback: Oops, unable to copy', err);
+        showStatus('Failed to copy link', 'error');
     }
+    
+    document.body.removeChild(textArea);
+}
 
-    function copyAllLinks() {
-      if (currentData.length === 0) {
-        showError('No links to copy');
-        return;
-      }
-      
-      const allLinks = currentData.map(r => r.link).filter(Boolean).join("\n");
-      copyToClipboard(allLinks).then(() => {
-        currentData.forEach(r => r.link ? copiedLinks.add(r.link) : null);
-        localStorage.setItem("copiedLinks", JSON.stringify([...copiedLinks]));
-        renderTable();
-        showSuccess('All links copied to clipboard!');
-      }).catch(err => {
-        console.error('Failed to copy all links: ', err);
-        showError('Failed to copy links. Please try again or copy manually.');
-      });
-    }
-
-    function exportToCSV() {
-      let csv = "Receipt No.,Sales Type,Generated Link\n";
-      currentData.forEach(r => {
-        if (r.link) {
-          csv += `"${r['Receipt No.'] || ''}","${r['Sales Type'] || ''}","${r.link}"\n`;
+// Copy all links
+function copyAllLinks() {
+    const links = currentData.map(item => item.link).join('\n');
+    
+    // Create a temporary textarea element
+    const textArea = document.createElement("textarea");
+    textArea.value = links;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    textArea.style.top = "-999999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            // Mark all links as copied and disable all copy buttons
+            currentData.forEach((item, index) => {
+                item.copied = true;
+            });
+            
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                button.disabled = true;
+            });
+            
+            showStatus('All links copied to clipboard!', 'success');
+        } else {
+            showStatus('Failed to copy all links', 'error');
         }
-      });
-      
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = "survey_links.csv";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      
-      showSuccess('CSV file exported successfully!');
+    } catch (err) {
+        console.error('Fallback: Oops, unable to copy', err);
+        showStatus('Failed to copy all links', 'error');
     }
+    
+    document.body.removeChild(textArea);
+}
 
-    function generateSurveyLink(row) {
-      const receipt = row['Receipt No.'];
-      const sales = row['Sales Type'];
-      
-      if (!receipt || !sales) return null;
-      
-      let SM = '', OI = '', OT = '';
-      
-      if (receipt.startsWith('K281') && sales === 'TAKEAWAY') {
-        SM = '4.0'; OI = receipt.slice(-4); OT = '2';
-      } else if (receipt.startsWith('K281') && sales === 'DINE-IN') {
-        SM = '4.0'; OI = receipt.slice(-4); OT = '1';
-      } else if (receipt.startsWith('K281') && sales === 'DELIVERY') {
-        SM = '3.0'; OI = receipt; OT = '3';
-      } else {
-        return null;
-      }
-      
-      const D = convertExcelDate(row['Date']);
-      const TM = convertExcelTime(row['Time']);
-      const PH = `91${row['Sell-to Contact No.'] || ''}`;
-      const DTM = `${D}T${TM}Z`;
-      
-      const data = {
-        "S": storeID,
-        "OI": OI,
-        "D": D,
-        "TM": TM,
-        "DTM": DTM,
-        "TI": OI,
-        "OT": OT,
-        "SM": SM,
-        "PH": PH
-      };
-      
-      return `https://customer.kfc-listens.com/jfe/form/SV_8bHC0noyvM3jPWC?Q_EED=${btoa(JSON.stringify(data))}`;
-    }
-
-    function convertExcelDate(serial) {
-      if (!serial || isNaN(serial)) return "";
-      const date = new Date((serial - 25569) * 86400 * 1000);
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-    }
-
-    function convertExcelTime(serial) {
-      if (!serial || isNaN(serial)) return "";
-      const totalMs = Math.round(serial * 24 * 60 * 60 * 1000);
-      const h = String(Math.floor(totalMs / (60 * 60 * 1000))).padStart(2, '0');
-      const m = String(Math.floor((totalMs % (60 * 60 * 1000)) / (60 * 1000))).padStart(2, '0');
-      const s = String(Math.floor((totalMs % (60 * 1000)) / 1000)).padStart(2, '0');
-      return `${h}:${m}:${s}`;
-    }
-  </script>
-</body>
-</html>
+// Export to CSV
+function exportToCSV() {
+    if (currentData.length === 0) return showStatus('No data to export', 'error');
+    
+    let csvContent = "Receipt No.,Sales Type,Survey Model,Generated Link\n";
+    currentData.forEach(row => {
+        csvContent += `"${row.receiptNo}","${row.salesType}","${row.surveyModel}","${row.link}"\n`;
+    });
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    
